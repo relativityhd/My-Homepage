@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Über mich - Tobias Hölzer', webcontent: 'Über Tobias Hölzer. Info, Fähigkeiten, Stärken und Interessen.'}) %>
+  <style>
+    #scene{
+      text-align:center;
+      position: relative;
+      margin-top: 600px;
+    }
+    #content-jumper{
+      background: white;
+      padding: 3vw;
+      display: inline;
+    }
+    .anchor-link{
+      font-size: 2.5vw;
+      margin-left: 1%;
+      text-decoration: none;
+    }
+    .anchor-border{
+      border-right: solid 2px #ff4081;
+      padding-right: 1%;
+    }
+    @media screen and (max-width: 600px) {
+      #content-jumper {
+        padding: 6vw;
+      }
+      .anchor-link{
+        font-size: 5vw;
+        margin-left: 2%;
+      }
+      .anchor-border{
+        padding-right: 2%;
+      }
+    }
+    #second-para{
+      font-size: 4vw;
+      color: #eee;
+      position: fixed;
+      top: -400px !important;
+      left: 10% !important;
+      line-height: 5vw;
+    }
+    .content-wrapper{
+      background: white;
+    }
+    .content{
+      padding-top: 3%;
+      padding-bottom: 3%;
+      width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 98%;
+    }
+    .padding{
+      padding: 5%;
+    }
+    .parallax-window {
+      min-height: 400px;
+      background: transparent;
+    }
+    .simple-parallax{
+      height: 400px;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    /* Turn off parallax scrolling for tablets and phones. Increase the pixels if needed */
+    @media only screen and (max-device-width: 1366px) {
+      .simple-parallax {
+        background-attachment: scroll;
+      }
+    }
+    .black{
+      color: white;
+    }
+    .black-hl{
+      background: white;
+      color: #000;
+      margin-top: 21px;
+      margin-bottom: 21px;
+      padding: 24px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      
+    }
+    .black-bg{
+      background: #000;
+    }
+    .center{
+      text-align: center;
+    }
+    .text{
+      text-align: justify;
+      font-size:24px;
+      line-height: 32px;
+    }
+    .demo-layout-transparent {
+      background: linear-gradient(0deg, rgba(255,255,255,0) 75%, rgba(0,0,0,0.5) 100%), url('/pics/parallax/Ganzkörper-Fern.jpg') center / cover;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: white;
+    }
+    h1,
+    h2,
+    h3{
+      font-variant: small-caps;
+    }
+    br{
+      display: block;
+      margin-bottom: 16px;
+    }
+  </style>
+  <script src="/js_css/parallax.min.js"></script>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      <%- include header-transparent %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div data-relative-input="true" id="scene">
+            <div data-depth="0.2" id="second-para">Wissen ist Macht.</div>
+          </div>
+          <div id="content-jumper">
+            <a class="anchor-link anchor-border" href="#skills">Kompetenzen</a>
+            <a class="anchor-link anchor-border" href="#strength">Stärken</a>
+            <a class="anchor-link" href="#interests">Interessen</a>
+          </div>
+          <div class="content-wrapper">
+            <div class="content">
+              <h1>Ich bin Tobias...</h1>
+              <div class="padding">
+                <p class="text">
+                  ...bin 19 Jahre jung, komme aus Berlin und bin ein Nerd. Ich mag Physik und Star Trek, 
+                  ich kann programmieren und ich habe Träume und Visionen für eine bessere Zukunft. Aber 
+                  ich bin auch ein sympathischer und kluger Typ. Ich bin sehr kommunikativ, ich bin interessiert 
+                  in Gesellschaft, Politik, Sport und Life-Style, meine Freunde sind mir wichtig, genauso 
+                  wie du. Wenn du mal mit mir quatschen möchtest, kannst du mich gerne über E-Mail oder ein 
+                  Soziales Netzwerk anschreiben.
+                <br>
+                  Heute bin ich ein Dualer Student an der Dualen Hochschule in Stuttgart, arbeite dort bei IBM und dort werde ich 2022 meinen 
+                  Bachelor schreiben. Meine restlichen Zukunftspläne sind:
+                </p>
+                <ul class="text">
+                  <li>Master/ Promovieren</li>
+                  <li>An künstlicher Intelligenz oder an Quantencomputern forschen</li>
+                  <li>Den Nobel Preis von Robotern überreicht bekommen</li>
+                </ul>
+                <p class="text">
+                  Du kannst mich besser in meinem Blog kennen lernen. Ich teile dort meine Meinungen und Einstellungen 
+                  zu politischen und technologischen Problemen. Außerdem kannst du das dort auch machen! Bei meinem 
+                  Blog kann sich jeder anmelden und selber etwas schreiben. Also schau auf jeden Fall mal vorbei. Du kannst auch in meiner 'Leistung' Abteilung vorbeischauen, dort 
+                  habe ich ein paar Arbeiten aus meiner Freizeit und meinem Schulleben zusammen getragen. Dort 
+                  kannst du auch meinen Lebenslauf und andere Auszeichnungen finden. 
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/Treppe.jpg);"></div>
+          <div class="content-wrapper black-bg">
+            <div class="content">
+              <a name="skills" id="skills"></a>
+              <h2 class="center">
+                <span class="black-hl">Ich kann...</span>
+              </h2>
+              <div class="padding">
+                <p class="black text">...in Python, Javascript, C und C# programmieren, super Präsentationen 
+                erstellen, kleine Sachen animieren und komplexe Dinge wie die Relativitätstheorie verstehen. 
+                Ich habe ein breites Spektrum an Wissen, weil ich an sehr vielem interessiert bin.
+                <br>
+                Aber...
+                <br>
+                ... da ich untalentiert in Linguistik bin, habe ich Schwierigkeiten mit Sprachen. Ich habe 
+                Angst davor, Dinge falsch zu machen und ohne die Unterstüzung von den vielen Menschen in meinem Leben würde ich nicht weit kommen.
+                Trotzdem stelle ich mich meinen Ängsten und Schwierigkeiten, in der Hoffnung daraus zu lernen.</p>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/code.jpeg);"></div>
+          <div class="content-wrapper">
+            <div class="content">
+              <a name="strength" id="strength"></a>
+              <h1 class="center">Ich bin...</h1>
+              <div class="mdl-grid padding">
+                <div class="mdl-cell mdl-cell--6-col">
+                  <ul class="text">
+                    <li>Intelligent</li>
+                    <li>Zuverlässig</li>
+                    <li>Aufmerksam</li>
+                    <li>Ziel-Orientiert</li>
+                    <li>Präzise</li>
+                    <li>Engagiert</li>
+                    <li>Freundlich</li>
+                  </ul>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                  <ul class="text">
+                    <li>Neugierig</li>
+                    <li>Interessiert</li>
+                    <li>Selbstbewusst</li>
+                    <li>Loyal</li>
+                    <li>Selbstständig</li>
+                    <li>Ordentlich</li>
+                    <li>Flexibel</li>
+                  </ul>
+                </div>
+              </div>
+              <h1 class="center">Aber manchmal auch...</h1>
+              <div class="padding">
+                <ul class="text center">
+                  <li>Dickköpfig</li>
+                  <li>Direkt</li>
+                  <li>Respektlos</li>
+                  <li>Tollpatschig</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/plasmakugel.jpg);"></div>
+          <div class="content-wrapper">
+            <div class="content">
+              <a name="interests" id="interests"></a>
+              <h1 class="center">Ich mag...</h1>
+              <div class="padding">
+                <h3>Physik</h3>
+                <p class="text">Mein größter Traum für die Zukunft ist es, ein renomierter Wissenschaftler zu 
+                werden und den Nobel Preis zu gewinnen. Ich habe schon immer komplexe Dinge, welche ich anfangs 
+                nicht durchschaut habe, gemocht. Außerdem bin ich davon überzeugt, dass das Universum in seiner 
+                Komplexität und Vielfalt zu verstehen, die letzte Bürde des Menschen ist.</p>
+                <h3>Informatik</h3>
+                <p class="text">Zu meinem Glück, bin ich sehr talentiert beim Verstehen und Anwenden von Alghoritmen. 
+                Ich habe schon an mehreren Software-Projekten mitgearbeitet und zum Teil selbst angeleitet. 
+                Daher bin ich ein guter und erfahrener Programmierer.</p>
+                <h3>Chemie</h3>
+                <p class="text">Als Teil meiner physikalischen Interessen bin ich jederzeit bereit mehr über das 
+                Verhalten von Atomen zu erfahren. Ich bin fasziniert von der Komplexität von chemischen Reaktionen.</p>
+                <h3>Psychologie</h3>
+                <p class="text">Das ultimativ komplexeste Wesen, das ich kenne, ist der Mensch. In den letzten Jahren 
+                habe ich viel Zeit damit verbracht das Verhalten von anderen zu verstehen. Daher bin ich gut darin mich 
+                in die Lage von anderen zu versetzen.</p>
+                <h3>Politik</h3>
+                <p class="text">Wenn viele komplexe Kreaturen zusammen kommen, nennen wir es 'Gesellschaft'. Und 
+                Politik ist das, was die Gesellschaft zusammenhält, lehrt und führt. Politik entscheidet über unsere 
+                Zukunft, daher bin ich interessiert an den Systemen, welche uns leiten. Gekoppelt an die Politik ist 
+                auch mein Interesse an der Wirtschaft, zu welcher ich jedoch größtenteils negativ eingestellt bin.</p>
+                <h3>Sport</h3>
+                <p class="text">Sport. Spiel. Spaß. Ich habe in meinem Kopf unglaublich viel Wissen über Fußball, 
+                geerbt und überbracht von meinem Vater. Aber ich habe nicht nur Fußball gespielt. Ich habe auch Handball 
+                für sechs Jahre, Tischtennis für ein Jahr und Fechten für vier Jahre gespielt und ausgeübt. Aber auch über 
+                andere Sportarten weiß ich Bescheid. American Football, Baseball, Basketball und natürlich Quidditch.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+    </body>
+    <script>
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+      var scene = document.getElementById('scene');
+      var parallaxInstance = new Parallax(scene);
+    </script>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Mello - Tobias Hölzer', 
+  webcontent: 'Mello is a social network I developed with some friends in 2018. This Project is dead, but you can still download it and test it.'}) %>
+  <style>
+    
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include ../header %>
+      <main class="mdl-layout__content">
+        <div class="work-page-content"><!-- Your content goes here -->
+          <h1 class="work-title">Mello</h1>
+          <p class="work-text">Last year we carried out a software project simulation in computer science lessons. Together with three others from my course I developed Mello. Mello is a social media site where the user could decide more. You can find a complete report in this pdf or in this presentation:</p>
+          <a class="work-text" href="/downloads/pdf/Software-Project-Dokumentation.pdf">Software Project Documentation (German)</a><br>
+          <a class="work-text" href="/downloads/pdf/Software-Project-Presentation.pdf">Software Project Presentation (German)</a>
+          <br class="work-br">
+          <p class="work-text">You can download and try it out, but don't use it in public. To start the project, de-zip the package, edit the path in the 'mello.bat' file and then start that file. You need to have installed Mongo-DB and Node.js. It will starts automaticly, but it needs a while to start, maybe refresh the side after 20 secs.</p>
+        </div>
+      </main>
+      <%- include ../footer %>
+    </div>
+  </body>
+</html>

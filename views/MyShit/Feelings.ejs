@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Feelings - Tobias Hölzer', webcontent: 'A project to track my feelings.'}) %>
+  <style>
+    .center{
+      text-align: center;
+    }
+    .add-feelings{
+      min-width: 200px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .chart-box{
+      margin-left: auto;
+      margin-right: auto;
+
+      -webkit-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+      -moz-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+      box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+    }
+
+    .mdl-list__item{
+      padding: 0px 16px;
+    }
+
+    .mdl-list__item-avatar{
+      color: #333 !important;
+      background-color: transparent !important;
+    }
+
+    .modal-background{
+      background-color: rgba(0,0,0,0.5);
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    
+    .blurred{
+      -webkit-filter: blur(10px);
+      -moz-filter: blur(10px);
+      -ms-filter: blur(10px);
+      -o-filter: blur(10px);
+      filter: blur(10px); 
+    }
+
+    .modal{
+      position: fixed; /* Sit on top of the page content */
+      overflow-y: auto;
+      transform: translate(0px, -1056px);
+      transition: 0.3s ease-out;
+      width: 60%;
+      max-width: 800px;
+      max-height: calc(97% - 122px);
+      left: 50%;
+      top: 122px;
+      margin-left: -400px;
+      background: #fff;
+      z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+    @media only screen and (max-width: 1333px) {
+      .modal{
+        margin-left: -30%;
+      }
+    }
+    @media only screen and (max-width: 666px) {
+      .modal{
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        width: 100%;
+        top: 56px;
+        max-height: calc(100% - 56px);
+
+      }
+    }
+    .mdl-dialog__content{
+      max-height: 500px;
+      overflow: auto;
+    }
+
+    .specific-radios{
+      text-align: center;
+    }
+
+    .specific-datetime{
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+  </style>
+  <script src="/js_css/plotly.js"></script>
+  <script src="/js_css/moment.js"></script>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          
+          <div class="hidden" id="userid"><%= userid %></div>
+
+          <h1 style="text-align: center;">My Feelings</h1>
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--3-col chart-box">
+              <div class="mdl-list add-feelings">
+
+                <div class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">mood</i>
+                    <span>Great</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="regFeeling(4)">
+                      <i class="material-icons">add</i>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <div class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">sentiment_satisfied</i>
+                    <span>Good</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="regFeeling(3)">
+                      <i class="material-icons">add</i>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <div class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">sentiment_dissatisfied</i>
+                    <span>Neutral</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="regFeeling(2)">
+                      <i class="material-icons">add</i>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <div class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">sentiment_very_dissatisfied</i>
+                    <span>Bad</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="regFeeling(1)">
+                      <i class="material-icons">add</i>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <div class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">mood_bad</i>
+                    <span>Very bad</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="regFeeling(0)">
+                      <i class="material-icons">add</i>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <div class="mdl-list__item">
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="showModal('modal-manage')">Manage Points</button>
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" onclick="showModal('modal-specific')">Add specific</button>
+                </div>
+
+              </div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col chart-box">
+              <div id="line-chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col chart-box">
+              <div id="pie-chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col chart-box">
+              <div id="avg-week-chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col chart-box">
+              <div id="avg-month-chart"></div>
+            </div>
+            <script>
+              let colors = {
+                'Great': '#009933',
+                'Good': '#99ff33',
+                'Neutral': '#ffff66',
+                'Bad': '#ff9933',
+                'Very bad': '#ff3300'
+              }
+              async function renderPieChart(values) {
+                let sortable = [];
+                for (let val in values) {
+                  sortable.push({
+                    feeling: val,
+                    c: values[val],
+                    color: colors[val]
+                  })
+                }
+                sortable.sort(function(a, b) {
+                    return b.c - a.c;
+                });
+
+                let dataValues = sortable.map((item) => {
+                  return item.c
+                })
+                let dataLabels = sortable.map((item) => {
+                  return item.feeling
+                })
+                let dataColors = sortable.map((item) => {
+                  return item.color
+                })
+                var data = [{
+                  values: dataValues,
+                  labels: dataLabels,
+                  type: 'pie'
+                }];
+
+                var layout = {
+                  colorway : dataColors,
+                  title: {
+                    text:'Sum of Feelings',
+                  }
+                };
+
+                var config = {
+                  displayModeBar: false,
+                  responsive: true
+                }
+
+                Plotly.newPlot('pie-chart', data, layout, config);
+              }
+
+              async function renderLineChart(values) {
+                values.sort((a, b) => {
+                  return new Date(b.date) - new Date(a.date)
+                })
+                let x = []
+                let y = []
+
+                values.forEach(feeling => {
+                  x.push(feeling.date)
+                  y.push(feeling.feeling)
+                })
+
+                let ox = x.map((e) => {return e})
+                let oy = y.map((e) => {
+                  return 4-e
+                })
+                var data = [
+                  {x: x, y: y, hoverinfo: 'y'}
+                ];
+
+                var layout = {
+                  yaxis: {
+                    tickvals: [0, 1, 2, 3, 4],
+                    ticktext: ["Very bad", "Bad", "Neutral", "Good", "Great"],
+                  },
+                  showlegend: false,
+                  title: {
+                    text: "Accurate",
+                  }
+                }
+
+                var config = {
+                  responsive: true
+                }
+
+                Plotly.newPlot('line-chart', data, layout, config);
+              }
+
+              async function renderAvgLineChart(values, t) {
+
+                values = values.map((elem) => { return {feeling: elem.feeling, date: elem._id} })
+
+                values.sort((a, b) => {
+                  return b.date-a.date
+                })
+
+                let x = []
+                let y = []
+
+                values.forEach(feeling => {
+                  x.push(feeling.date)
+                  y.push(feeling.feeling)
+                })
+
+                let ox = x.map((e) => {return e})
+                let oy = y.map((e) => {
+                  return 4-e
+                })
+                var data = [
+                  {x: x, y: y, stackgroup: 'one', hoverinfo: 'y', line: {shape: 'spline'}},
+                  {x: ox, y: oy, stackgroup: 'one', hoverinfo: 'skip'}
+                ]
+
+                var layout = {
+                  yaxis: {
+                    tickvals: [0, 1, 2, 3, 4],
+                    ticktext: ["Very bad", "Bad", "Neutral", "Good", "Great"],
+                  },
+                  showlegend: false,
+                  colorway : [colors['Great'], colors['Bad']],
+                  title: {
+                    text: "Average per " + t,
+                  }
+                }
+
+                if (t === "month") {
+                  layout.xaxis = {
+                    tickvals: Array.from({length: 12}).map((_, i) => i+1),
+                    ticktext: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"]
+                  }
+                }
+
+                var config = {
+                  responsive: true
+                }
+
+                Plotly.newPlot(`avg-${t}-chart`, data, layout, config);
+              }
+
+              function regFeeling(feeling) {
+                socket.emit("registerFeeling", {
+                  feeling: parseInt(feeling),
+                  userid: $('#userid')[0].innerHTML
+                })
+              }
+
+              let avgWeekQuery =  [ { $match : {user: $('#userid')[0].innerHTML} }, 
+                { $group: 
+                    { _id: {$week: "$date"},
+                      feeling: { $avg : "$feeling" } } } 
+              ]
+
+              let avgMonthQuery =  [ { $match : {user: $('#userid')[0].innerHTML} }, 
+                { $group: 
+                    { _id: {$month: "$date"},
+                      feeling: { $avg : "$feeling" } } } 
+              ]
+
+              function emitThings () {
+                socket.emit("requestFindFeelings", {
+                  query: {user: $('#userid')[0].innerHTML},
+                  response: "responseAccFeelings"
+                })
+                socket.emit("requestAggregateFeelings", {
+                  query: avgMonthQuery,
+                  response: "responseAvgMonthFeelings"
+                })
+                socket.emit("requestAggregateFeelings", {
+                  query: avgWeekQuery,
+                  response: "responseAvgWeekFeelings"
+                })
+                socket.emit("requestCountFeelings", {
+                  userid: $('#userid')[0].innerHTML
+                })
+              }
+
+              socket.on("savedFeeling", (success) => {
+                if (success) {
+                  emitThings()
+                  var data = {message: "Successfully saved feeling!"};
+                  document.querySelector('#page-toast').MaterialSnackbar.showSnackbar(data);
+                } else {
+                  var data = {message: "Couldn't save feeling!"};
+                  document.querySelector('#page-toast').MaterialSnackbar.showSnackbar(data);
+                }
+              })
+
+              socket.on("responseDeleteFeeling", (valid) => {
+                if (valid) {
+                  emitThings()
+                  var data = {message: "Successfully deleted feeling!"};
+                  document.querySelector('#page-toast').MaterialSnackbar.showSnackbar(data);
+                } else {
+                  var data = {message: "Couldn't delete feeling!"};
+                  document.querySelector('#page-toast').MaterialSnackbar.showSnackbar(data);
+                }
+              })
+
+              
+
+              socket.on("responseAccFeelings", (data) => {
+                renderLineChart(data) })
+              socket.on("responseAvgMonthFeelings", (data) => {
+                renderAvgLineChart(data, 'month') })
+              socket.on("responseAvgWeekFeelings", (data) => {
+                renderAvgLineChart(data, 'week') })
+              socket.on("responseCountFeelings", (data) => {
+                renderPieChart(data) })
+              
+              emitThings()
+
+            </script>
+          </div>
+
+        </div>
+
+        <div id="page-toast" class="mdl-js-snackbar mdl-snackbar">
+          <div class="mdl-snackbar__text"></div>
+          <button class="mdl-snackbar__action" type="button"></button>
+        </div>
+
+        <div class="modal-background" onclick="hideModals()"></div>
+
+        <!-- Specific Feeling-->
+        <div class="mdl-dialog modal" id="modal-specific">
+          <h4 class="mdl-dialog__title">Add a specific Feeling Point</h4>
+          <div class="mdl-dialog__content">
+            <hr>
+            <h6>Feeling</h6>
+            <div class="mdl-list specific-radios">
+              <label class="mdl-list__item mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-great">
+                <input type="radio" id="option-great" class="mdl-radio__button" name="feeling-options" value="4" checked>
+                <span class="mdl-radio__label">Great</span>
+              </label>
+              <label class="mdl-list__item mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-good">
+                <input type="radio" id="option-good" class="mdl-radio__button" name="feeling-options" value="3">
+                <span class="mdl-radio__label">Good</span>
+              </label>
+              <label class="mdl-list__item mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-neutral">
+                <input type="radio" id="option-neutral" class="mdl-radio__button" name="feeling-options" value="2">
+                <span class="mdl-radio__label">Neutral</span>
+              </label>
+              <label class="mdl-list__item mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-bad">
+                <input type="radio" id="option-bad" class="mdl-radio__button" name="feeling-options" value="1">
+                <span class="mdl-radio__label">Bad</span>
+              </label>
+              <label class="mdl-list__item mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-very-bad">
+                <input type="radio" id="option-very-bad" class="mdl-radio__button" name="feeling-options" value="0">
+                <span class="mdl-radio__label">Very bad</span>
+              </label>
+            </div>
+            <h6>Date and Time</h6>
+            <div class="mdl-grid specific-datetime">
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+                <input class="mdl-textfield__input" type="date" pattern="([0-9]{2}\.){2}[0-9]{4}" id="specific-date" placeholder="" onchange="checkSpecificInputs()">
+                <label class="mdl-textfield__label" for="specific-date">Date</label>
+                <span class="mdl-textfield__error">Input is not a in date format!</span>
+              </div>
+              
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+                <input class="mdl-textfield__input" type="text" pattern="([0-1][0-9]|2[0-4]):[0-5][0-9]" id="specific-time" onkeyup="checkSpecificInputs()">
+                <label class="mdl-textfield__label" for="specific-time">Time (hh:mm)</label>
+                <span class="mdl-textfield__error">Input is not a in format (hh:mm)!</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="save-specific" onclick="regSpecificFeeling()" disabled>Save</button>
+            <button type="button" class="mdl-button" onclick="hideModals()">Close</button>
+          </div>
+          <script>
+            function regSpecificFeeling() {
+              try{
+                let date = $('#specific-date').val()
+                let time = $('#specific-time').val()
+                let year = date.split("-")[0]
+                let month = date.split("-")[1]-1
+                let day = date.split("-")[2]
+
+                let hour = time.split(":")[0]
+                let minute = time.split(":")[1]
+                let mydate = new Date(year, month, day, hour, minute)
+                socket.emit("registerFeeling", {
+                  feeling: parseInt($('input[name="feeling-options"]:checked').val()),
+                  userid: $('#userid')[0].innerHTML,
+                  date: mydate
+                })
+                hideModals()
+              } catch (e) {
+                var data = {message: "Couldn't save feeling!"};
+                document.querySelector('#page-toast').MaterialSnackbar.showSnackbar(data);
+              }
+            }
+
+            function checkSpecificInputs() {
+              try{
+                let date = $('#specific-date').val()
+                let time = $('#specific-time').val()
+                let year = parseInt(date.split("-")[0])
+                let month = parseInt(date.split("-")[1]-1)
+                let day = parseInt(date.split("-")[2])
+
+                let hour = parseInt(time.split(":")[0])
+                let minute = parseInt(time.split(":")[1])
+                if (year && month && day && /([0-1][0-9]|2[0-4]):[0-5][0-9]/.test(time)){
+                  let mydate = new Date(year, month, day, hour, minute)
+                  $('#save-specific').prop( "disabled", false )
+                } else {
+                  $('#save-specific').prop( "disabled", true )
+                }
+              } catch (e) {
+                console.log(e)
+                $('#save-specific').prop( "disabled", true )
+              }
+            }
+            checkSpecificInputs()
+          </script>
+        </div>
+
+        <!-- Manage Feeling -->
+        <div class="mdl-dialog modal" id="modal-manage">
+          <h4 class="mdl-dialog__title">Manage Feelings Points</h4>
+          <div class="mdl-dialog__content">
+
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input" type="text" pattern="([0-9]{4}((-[0-9]{2}){1,2})?( ([0-1][0-9]|2[0-4]))?(:[0-5][0-9])?)?" id="search-date" onkeyup="searchFeeling()">
+              <label class="mdl-textfield__label" for="search-date">Search for Date</label>
+              <span class="mdl-textfield__error">Input is not a in required format (yyyy-mm-dd hh:mm) !</span>
+            </div>
+
+            <ul class="mdl-list" id="feelings-list"></ul>
+
+          </div>
+          <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button">Save</button>
+            <button type="button" class="mdl-button" onclick="hideModals()">Close</button>
+          </div>
+
+          <script>
+            function deleteFeeling(id) {
+              socket.emit("deleteFeeling", { id, response:"responseDeleteFeeling" })
+            }
+
+            function searchFeeling() {
+              if ($('#search-date'.val)) {
+                try{
+                  let date = $('#search-date').val().split(" ")[0]
+                  let time = $('#search-date').val().split(" ")[1] || "00:00"
+                  let year = date.split("-")[0] || "2020"
+                  let month = date.split("-")[1]-1 || "0"
+                  let day = date.split("-")[2] || "1"
+                  let hour = time.split(":")[0] || "0"
+                  let minute = time.split(":")[1] || "0"
+
+                  let mydate = new Date(parseInt(year), parseInt(month), parseInt(day), parseInt(hour), parseInt(minute))
+                  console.log(mydate)
+                  socket.emit("requestFindFeelings", {
+                    query: {user: $('#userid')[0].innerHTML, date: {"$gte": mydate}},
+                    response: "responseManageFeelings" })
+                } catch (e) {
+                  return e
+                }
+              } else {
+                socket.emit("requestFindFeelings", {
+                query: {user: $('#userid')[0].innerHTML},
+                response: "responseManageFeelings" })
+              }
+            }
+            socket.emit("requestFindFeelings", {
+                query: {user: $('#userid')[0].innerHTML},
+                response: "responseManageFeelings" })
+
+            socket.on("responseManageFeelings", (data) => {
+              let listHTML = ""
+              data.forEach((e) => {
+                let icon = ["mood_bad", "sentiment_very_dissatisfied", "sentiment_dissatisfied", "sentiment_satisfied", "mood"][e.feeling]
+                let feeling = ["Very bad", "Bad", "Neutral", "Good", "Great"][e.feeling]
+                let dateFormatted = moment(e.date).format("dddd, MMMM Do YYYY, h:mm:ss a")
+                listHTML += `
+                <li class="mdl-list__item mdl-list__item--two-line">
+                  <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-avatar">${icon}</i>
+                    <span>${feeling}</span>
+                    <span class="mdl-list__item-sub-title">${dateFormatted}</span>
+                  </span>
+                  <span class="mdl-list__item-secondary-content">
+                    <span class="mdl-list__item-secondary-info">Delete</span>
+                    <button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon mdl-button--accent" onclick="deleteFeeling('${e._id}')"><i class="material-icons">delete</i></button>
+                  </span>
+                </li>`
+              })
+              listHTML = listHTML=="" ? "<h6>Couldn't find feelings...</h6>" : listHTML
+              $('#feelings-list').html(listHTML)
+            })
+            
+          </script>
+        </div>
+
+        <script>
+          function hideModals() {
+            $('.modal').each((i, e) => {
+              e.style.transform = "translate(0px, -1056px)"
+            })
+            setTimeout(() => {
+              $('.modal').hide()
+              $('.modal-background ').hide()
+              $('.page-content').removeClass('blurred')
+            }, 50)
+          }
+          hideModals()
+
+          function showModal(modalID) {
+            $('#'+modalID).show()
+            setTimeout(() => {
+              $('#'+modalID)[0].style.transform = "translate(0px, 0px)"
+            }, 50)
+            $('.modal-background ').show()
+            $('.page-content').addClass('blurred')
+          }
+        </script>
+
+      </main>
+      <%- include footer %>
+    </div>
+  </body>
+</html>

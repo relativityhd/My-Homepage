@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Schreiben - Tobias Hölzer', webcontent: 'Schreibe einen Artikel. Füge Bilder hinzu und style den Text so wie du willst.'}) %>
+  <link href="/js_css/highlight.js/monokai-sublime.min.css" rel="stylesheet">
+  <link href="/js_css/quill.snow.css" rel="stylesheet">
+  <link href="/js_css/croppie.css" rel="stylesheet"/>
+  <style>
+    .page-wrapper{
+      width: 80%;
+      max-width: 1024px;
+      margin-top: 3%;
+      margin-bottom: 3%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hidden{
+      visibility: hidden;
+      display: block !important;
+    }
+    .dialog{
+      position: fixed; /* Sit on top of the page content */
+      overflow-y: auto;
+      transform: translate(0px, -1056px);
+      transition: 0.3s ease-out;
+      width: 60%;
+      max-width: 824px;
+      max-height: calc(97% - 122px);
+      left: 50%;
+      top: 122px;
+      margin-left: -412px;
+      background: #fff;
+      z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+    @media only screen and (max-width: 1374px) {
+      .dialog{
+        margin-left: -30%;
+      }
+    }
+    @media only screen and (max-width: 915px) {
+      .dialog{
+        width: 90%;
+        margin-left: -45%;
+      }
+    }
+    #pic-dialog{
+      width: 80%;
+      max-width: 1212px;
+      margin-left: -606px;
+      height: calc(97% - 122px);
+    }
+    @media only screen and (max-width: 1515px) {
+      #pic-dialog{
+        margin-left: -40%;
+      }
+    }
+    .centered{
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dialog-bg{
+      position: fixed;
+      min-width: 100%;
+      top: 0%;
+      width: 100%;
+      min-height: 100%;
+      height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 1;
+      transition: 0.3s;
+    }
+    .blurred{
+      -webkit-filter: blur(10px);
+      -moz-filter: blur(10px);
+      -ms-filter: blur(10px);
+      -o-filter: blur(10px);
+      filter: blur(10px); 
+    }
+    .hiddenDisplay{
+      display: none;
+    }
+
+    
+    .demo-list-control {
+      width: 300px;
+    }
+    .demo-list-radio {
+      display: inline;
+    }
+
+    .mdl-button--file >input {
+      cursor: pointer;
+      height: 100%;
+      right: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      width: 300px;
+      z-index: 4;
+    }
+    .mdl-textfield--file > .mdl-button--file {
+      right: 0;
+    }
+    
+    .data-input{
+      display: block;
+      text-align: center;
+    }
+    .upload-demo .upload-demo-wrap,
+    .upload-demo .upload-result,
+    .upload-demo.ready .upload-msg {
+      display: none;
+    }
+    .upload-demo.ready .upload-demo-wrap {
+      display: block;
+    }
+    .upload-demo.ready .upload-result {
+      display: inline-block;    
+    }
+    .upload-demo-wrap {
+      width: 512px;
+      height: 512px;
+      margin: 0 auto;
+      margin-bottom: 12px;
+    }
+    #upload{
+      display: none;
+    }
+
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+      content: 'Small';
+      font-size: 16px !important;
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before {
+      content: 'Small';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
+        content: 'Normal';
+        font-size: 24px !important;
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before {
+      content: 'Normal';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before {
+        content: 'Large';
+        font-size: 32px !important;
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before {
+      content: 'Large';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="56px"]::before {
+        content: 'Huge';
+        font-size: 56px !important;
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="56px"]::before {
+      content: 'Huge';
+    }
+    .ql-container{
+      font-family: "Roboto";
+      font-size: 24px;
+    }
+
+    .title{
+      font-variant: small-caps;
+      font-size: calc(36px + 3vw);
+      margin: 0%;
+      color: #000;
+    }
+    .subline{
+      font-size: calc(24px + 1vw);
+      color: rgba(0,0,0, .55);
+      margin: 0%;
+    }
+    .subText{
+      margin-bottom: 5px;
+      margin-top: 3px;
+      font-size: 16px;
+      color: rgba(0,0,0, .55);
+    }
+    .date,
+    .written,
+    .visits{
+      font-size: calc(12px + 0.5vw);
+      color: rgba(0,0,0, .55);
+      margin: 0;
+    }
+    .aboutText{
+      font-size: 18px;
+      color: rgba(0,0,0, .75);
+    }
+    .article-pic{
+      width: 95%;
+      max-width: 1024px;
+      max-height: 512px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      object-fit: cover;
+      -webkit-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      -moz-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+    }
+    .content{
+      width: 100%;
+      overflow-x: auto;
+    }
+    .centered{
+      text-align: center;
+    }
+    .inline{
+      display: inline-block;
+    }
+    .actbtn{
+      margin-left: 5px;
+    }
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <div class="page-wrapper">
+          <div class="page-content"><!-- Your content goes here -->
+            <h1>Schreibe einen Artikel</h1>
+
+            <div id="picToast" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text"></div>
+              <button class="mdl-snackbar__action" type="button"></button>
+            </div>
+
+            <form action="/de<%= url.main.blog+url.blog.write %>?article=<%=article._id%>" method="post" id="submit">
+              <div class="mdl-grid">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+                  <input class="mdl-textfield__input" type="text" id="title" name="title" onkeyup="checkTitle()" minlenght="3" maxlength="50">
+                  <label class="mdl-textfield__label" for="title">Titel</label>
+                  <span class="mdl-textfield__error hidden" id="title_err">Titel muss zwischen 3 und 50 Buchstaben lang sein!</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+                  <input class="mdl-textfield__input" type="text" id="subtitle" name="subtitle" onkeyup="checkSubtitle()" minlenght="10" maxlength="120">
+                  <label class="mdl-textfield__label" for="subtitle">Alternativtitel</label>
+                  <span class="mdl-textfield__error hidden" id="subtitle_err">Alternativtitel muss zwischen 10 und 120 Buchstaben lang sein!</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
+                  <input class="mdl-textfield__input" type="text" id="taginp" name="taginp" onkeypress="checkTag(event)" maxlength="30">
+                  <label class="mdl-textfield__label" for="taginp">Stichworte</label>
+                  <span class="mdl-textfield__error hidden" id="taginp_err">Ein Stichwort kann nicht länger als 30 Buchstaben sein!</span>
+                </div>
+
+                <div class="mdl-cell mdl-cell--1-col">
+                  <div class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="addTag()" style="bottom: -10px;">
+                    <i class="material-icons">add</i>
+                  </div>
+                </div>
+
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--8-col" for="public">
+                  <input type="checkbox" name="public" id="public" class="mdl-switch__input" checked>
+                  <span class="mdl-switch__label">Öffentlich</span>
+                </label>
+
+                <div class="mdl-cell--4-col" id="tags"></div>
+              </div>
+              <input style="display: none; visibility: hidden;" id="tagjson" name="tagjson">
+
+              <input name="article" id="article" type="hidden">
+              <input name="length" id="length" type="hidden">
+              <input name="picid" id="picid" type="hidden" value="0">
+              <input name="authorid" id="authorid" type="hidden" value="<%=userid%>">
+              <div name="editor" id="editor"></div>
+            </form>
+            <div class="mdl-textfield">
+              <span class="mdl-textfield__error hidden" id="editor_err">Text muss mindestens 256 Buchstaben lang sein!</span>
+            </div>
+            <br>
+            <div class="inline">
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab" id="del" style="display: none" onclick="openSure()">
+                <i class="material-icons">delete</i>
+              </button>
+            </div>
+            <div class="inline" style="float: right; margin-bottom: 10px;">
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab actbtn" id="btn-img" onclick="pictureMode()">
+                <i class="material-icons">add_a_photo</i>
+              </button>
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab actbtn" id="previewButton"  onclick="preview()">
+                <i class="material-icons">remove_red_eye</i>
+              </button>
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored actbtn" id="save" onclick="submit()" disabled>
+                <i class="material-icons">publish</i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mdl-dialog dialog" id="dialog">
+          <div style="float: right;">
+            <button type="button" class="mdl-button" id="dialog_close-prev" onclick="closePreview()"><i class="material-icons">close</i></button>
+          </div>
+          <div class="mdl-dialog__content">
+            <div class="centered">
+              <h1 class="title" id="prev-title"></h1>
+              <h4 class="subline" id="prev-subline"></h4>
+              <img class="article-pic" id="prev-photo" src="<%= url.main.blog+url.blog.pictures+'?picID=book'%>"><br>
+              <div class="tags-wrapper" id="prev-tags"></div>
+              <p class="date inline">Geschrieben jetzt gerade von </p>
+              <p class="written inline"><a href="/de<%=url.main.blog+url.blog.profile%>?user=<%=author._id%>">
+                <% if (author.firstname!=""||author.lastname!="") { %>
+                  <%=author.username + " - " +author.firstname+" "+author.lastname%>
+                <% }else{%>
+                  <%=author.username%>
+                <%}%>
+              </a></p>
+              <p class="visits">Aufrufe: 0</p>
+            </div>
+            <div class="content" id="content"></div>
+          </div>
+          <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button" onclick="closePreview()">Schließen</button>
+          </div>
+        </div>
+
+        <div class="mdl-dialog dialog" id="pic-dialog">
+          <div style="float: right;">
+            <button type="button" class="mdl-button" id="dialog_close-img" onclick="closePictureMode()"><i class="material-icons">close</i></button>
+          </div>
+          <h4 class="mdl-dialog__title">Lade ein Artikelbild hoch</h4>
+          <h5 class="mdl-dialog__title subText" style="padding-top: 5px;">Auf manchen Seiten ist das Artikelbild abgeschnitten.</h5>
+          <div class="mdl-dialog__content">
+            <div class="upload-img-wrap">
+              <div id="upload-img"></div>
+            </div>
+            <input type="file" id="upload" value="Choose a file" accept="image/*" />
+          </div>
+          <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="closePictureMode()" id="save">Okay</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="clickSelect()" id="save">Auswählen</button>
+          </div>
+        </div>
+
+        <div class="mdl-dialog dialog" id="sure-dialog">
+          <h4 class="mdl-dialog__title">Sicher?</h4>
+          <div class="mdl-dialog__content">
+            <p>Dies kann nicht rückgängig gemacht werden.</p>
+          </div>
+          <div class="mdl-dialog__actions">
+            <a type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" id="delSure">Ja</a>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="closeSure()">Nein</button>
+          </div>
+        </div>
+        
+        <div id="dialog-bg" class="dialog-bg hiddenDisplay" onclick="closePreview()"></div>
+        <div id="pic-dialog-bg" class="dialog-bg hiddenDisplay" onclick="closePictureMode()"></div>
+        <div id="sure-dialog-bg" class="dialog-bg hiddenDisplay" onclick="closeSure()"></div>
+        
+        <div class="mdl-tooltip mdl-tooltip--large" for="dialog_close-prev">Schließen</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="dialog_close-img">Schließen</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="del">Löschen</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="btn-img">Titelbild</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="previewButton">Vorschau</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="save">Speichern</div>
+      </main>
+
+      <script src="/js_css/highlight.js"></script>
+      <script src="/js_css/quill.js"></script>
+      <script src="/js_css/image-resize.min.js"></script>
+      <script src="/js_css/image-drop.min.js"></script>
+      <script src="/js_css/croppie.min.js"></script>
+      <script>
+
+        var article = <%-JSON.stringify(article)%>
+        var url = <%-JSON.stringify(url)%>
+
+        var Editor = $('#submit')[0]
+        var About = $('#article')[0]
+        var Length = $('#length')[0]
+        var Title = $('#title')[0]
+        var Subtitle = $('#subtitle')[0]
+        var Preview = $('#dialog')[0]
+        var Content = $('#content')[0]
+        var Headline = $('#prev-title')[0]
+        var Subline = $('#prev-subline')[0]
+        var PrevTags = $('#prev-tags')[0]
+        var PrevPhoto = $('#prev-photo')[0]
+        var Public = $('#public')[0]
+        var TagInp = $('#taginp')[0]
+        var Tags = $('#tags')[0]
+        var TagJSON = $('#tagjson')[0]
+
+        
+        var Dialog = $('#dialog')[0]
+        var PicDialog = $('#pic-dialog')[0]
+        var SureDialog = $('#sure-dialog')[0]
+        var DialogBG = $('#dialog-bg')
+        var PicDialogBG = $('#pic-dialog-bg')
+        var SureDialogBG = $('#sure-dialog-bg')
+        var Page = $('.page-content')
+
+        var snackbarContainer = $('#picToast')[0];
+        
+        var Save = $('#save')[0]
+        var Del = $('#del')[0]
+        var DelSure = $('#delSure')[0]
+        var TitleErr = $('#title_err')[0]
+        var SubtitleErr = $('#subtitle_err')[0]
+        var EditorErr = $('#editor_err')[0]
+        
+        var editorValid = false
+        var titleValid = false
+        var subtitleValid = false
+
+        var tags = []
+
+        var picIdInput = $('#picid')[0]
+
+        function openSure(){
+          SureDialog.style.transform = "translate(0px, 0px)"
+          SureDialogBG.removeClass('hiddenDisplay')
+          setTimeout(function() {
+            SureDialogBG[0].style.opacity=0.8
+            Page.addClass('blurred')
+          }, 20)
+        }
+        function closeSure(){
+          SureDialog.style.transform = "translate(0px, -1056px)"
+          SureDialogBG[0].style.opacity=0
+          Page.removeClass('blurred')
+          SureDialogBG.one('transitionend', function(e) {
+            SureDialogBG.addClass('hiddenDisplay')
+          })
+        }
+
+        // Picture Mode ==================================================================================================================================================
+        function pictureMode(){
+          PicDialog.style.transform = "translate(0px, 0px)"
+          PicDialogBG.removeClass('hiddenDisplay')
+          setTimeout(function() {
+            PicDialogBG[0].style.opacity=0.8
+            Page.addClass('blurred')
+          }, 20)
+        }
+
+        function closePictureMode(){
+          PicDialog.style.transform = "translate(0px, -1056px)"
+          PicDialogBG[0].style.opacity=0
+          Page.removeClass('blurred')
+          PicDialogBG.one('transitionend', function(e) {
+            PicDialogBG.addClass('hiddenDisplay')
+          })
+        }
+        
+        // Croppie
+        function clickSelect(){
+          $('#upload')[0].click()
+        }
+        function clickSave(){
+          if (((!article || article.articlePicID=="book") && binded) || (article && article.articlePicID!="book" && binded)) {
+            $uploadCrop.croppie('result', {
+              type: 'canvas',
+              size: {width: 1024, height: 512}
+            }).then(function (resp) {
+              socket.emit("uploadImage" , {src: resp, uniqueID: uniqueID, typeCode: "articlecode-"})
+              if (uniqueID!="book"&&uniqueID!=0) {
+                Editor.submit()
+              }
+            });
+          }else if (article && article.articlePicID!="book"){
+            uniqueID = article.articlePicID
+            picIdInput.value = uniqueID
+            Editor.submit()
+          }else{
+            uniqueID = "book"
+            picIdInput.value = uniqueID
+            Editor.submit()
+          }
+        }
+        
+        var uniqueID = 0
+        binded = false
+        $('#upload-img').click(function() {
+          if (article) {
+            if (!binded && article.articlePicID=="book") {
+              clickSelect()
+            }
+          }else{
+            if (!binded) {
+              clickSelect()
+            }
+          }
+        })
+        
+        socket.on("uniqueCode", function(data) {
+          uniqueID = data.code
+          picIdInput.value = uniqueID
+          Editor.submit()
+        })
+        
+        var picImgInput
+        function readFile(input) {
+          if (typeof(input)==="undefined") {
+            return false
+          }else{
+            picImgInput = input
+          }
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              $('.upload-write').addClass('ready');
+              $uploadCrop.croppie('bind', {
+                url: e.target.result
+              }).then(function(){
+                binded = true
+              })
+            }
+            reader.readAsDataURL(input.files[0]);
+          }
+          else{
+            snackbarContainer.MaterialSnackbar.showSnackbar({message: "Your browser is to old for this."})
+          }
+        }
+        
+        // Wait 2 secs until make change
+        var changedTime = 0
+        function cropChanged(data) {
+          changedTime ++
+          setTimeout(function() {
+            changedTime --
+            if (changedTime==0) {
+              $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+              }).then(function (resp) {
+                if (resp && binded) {
+                  PrevPhoto.src = resp
+                }
+              })
+            }
+          }, 2000)
+        }
+
+        var sizeW = 1024,
+            sizeH = 512
+            bound = 88,
+            zoom = 2
+        if ($(document).width()<=768 || $( document ).height()<=436) {
+          sizeW = 256
+          sizeH = 128
+          bound = 22
+          zoom = 1
+        }else if ($(document).width()<=1450 || $( document ).height()<=736){
+          sizeW = 512
+          sizeH = 256
+          bound = 44
+          zoom = 0.5
+        }
+        var $uploadCrop = $('#upload-img').croppie({
+          viewport: {
+            width: sizeW,
+            height: sizeH,
+            type: 'square'
+          },
+          boundary: {width: (sizeW+bound), height: (sizeH+(bound*0.2))},
+          update: function (data, otherdata){cropChanged(data, otherdata)}
+        })
+        if (article && article.articlePicID!="book") {
+          PrevPhoto.src = url.main.blog+url.blog.pictures+'?picID='+article.articlePicID
+          $uploadCrop.croppie('bind', {
+            url: url.main.blog+url.blog.pictures+'?picID='+article.articlePicID,
+            points: [0,0, sizeW, sizeH]
+          }).then(function() {
+            $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+            $uploadCrop.croppie('setZoom', zoom)
+          })
+        }else{
+          $uploadCrop.croppie('bind', {
+            url: "/pics/Standard/standard-book.png",
+            points: [0,0, sizeW, sizeH]
+          }).then(function() {
+            $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+            $uploadCrop.croppie('setZoom', zoom)
+          })
+        }
+
+        var lastWindowWidth = $(document).width()
+        var lastWindowHeight = $( document ).height()
+        window.onresize = function(){
+          if ((lastWindowWidth <= 1450 && $(document).width() > 1450) ||
+              (lastWindowWidth > 1450 && $(document).width() <= 1450) ||
+              (lastWindowHeight <= 736 && $(document).height() > 736) ||
+              (lastWindowHeight > 736 && $(document).height() <= 736) ||
+              (lastWindowWidth <= 768 && $(document).width() > 768) ||
+              (lastWindowWidth > 768 && $(document).width() <= 768) ||
+              (lastWindowHeight <= 436 && $(document).height() > 436) ||
+              (lastWindowHeight > 436 && $(document).height() <= 436)) {
+
+            $('#upload-img').croppie('destroy', {})
+            $('.upload-write').removeClass('ready');
+            $("#upload-img").html("");
+            $uploadCrop=null;
+
+            var sizeW = 1024,
+                sizeH = 512
+                bound = 88,
+                zoom = 2
+            if ($(document).width()<=768 || $( document ).height()<=436) {
+              sizeW = 256
+              sizeH = 128
+              bound = 22
+              zoom = 0.5
+            }else if ($(document).width()<=1450 || $( document ).height()<=736){
+              sizeW = 512
+              sizeH = 256
+              bound = 44
+              zoom = 1
+            }
+
+            var $uploadCrop = $('#upload-img').croppie({
+              viewport: {
+                width: sizeW,
+                height: sizeH,
+                type: 'square'
+              },
+              boundary: {width: (sizeW+bound), height: (sizeH+(bound*0.2))},
+              update: function (data, otherdata){cropChanged(data, otherdata)}
+            });
+            if (binded) {
+              readFile(picImgInput)
+            }else{
+              if (article && article.articlePicID!="book") {
+                PrevPhoto.src = url.main.blog+url.blog.pictures+'?picID='+article.articlePicID
+                $uploadCrop.croppie('bind', {
+                  url: url.main.blog+url.blog.pictures+'?picID='+article.articlePicID,
+                  points: [0,0, sizeW, sizeH]
+                }).then(function() {
+                  $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+                  $uploadCrop.croppie('setZoom', 1)
+                })
+              }else{
+                $uploadCrop.croppie('bind', {
+                  url: "/pics/Standard/standard-book.png",
+                  points: [0,0, sizeW, sizeH]
+                }).then(function() {
+                  $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+                  $uploadCrop.croppie('setZoom', zoom)
+                })
+              }
+            }
+          }
+          lastWindowWidth = $(document).width()
+          lastWindowHeight = $( document ).height()
+        }
+        
+        $('#upload')[0].value = ""
+        $('#upload').on('change', function () { readFile(this); })
+
+        // QuillJS ==================================================================================================================================================
+
+        let undo_icon = `
+          <svg viewbox="0 0 18 18">
+            <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
+            <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
+          </svg>`
+        let redo_icon = `
+          <svg viewbox="0 0 18 18">
+            <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
+            <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path>
+          </svg>`
+
+        var icons = Quill.import("ui/icons");
+        icons["undo"] = undo_icon;
+        icons["redo"] = redo_icon;
+
+        var toolbarOptions = {
+          container: [
+            [{ 'size': ['16px', '24px', '32px', '56px'] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [ 'link', 'image', 'video', 'formula' ],
+
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'indent': '-1'}, { 'indent': '+1' }, { 'align': [] }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+
+            ['code-block', 'clean'],
+
+            [{undo: undo_icon},
+             {redo: redo_icon}]
+          ], handlers: {
+            redo() { quillRedo(); },
+            undo() { quillUndo(); }
+          }
+        }
+
+        var resizeOptions = {
+          displayStyles: {
+            backgroundColor: 'black',
+            border: 'none',
+            color: 'white'
+          },
+          modules: ['Resize', 'DisplaySize', 'Toolbar']
+        }
+
+        hljs.configure({languages: ['javascript', 'ruby', 'python'], useBR: false})
+
+        var QFont = Quill.import('formats/font')
+        QFont.whitelist = ['roboto']
+        Quill.register(QFont, true)
+
+        var QSize = Quill.import('attributors/style/size')
+        QSize.whitelist = ['16px', '24px', '32px', '56px']
+        Quill.register(QSize, true)
+
+        var quill = new Quill('#editor', {
+          placeholder: 'Enter your text here...',
+          theme: 'snow',
+          modules: {
+            syntax: true,
+            toolbar: toolbarOptions,
+            imageDrop: true,
+            imageResize: resizeOptions,
+            history: {
+              delay: 2000,
+              maxStack: 500,
+              userOnly: true
+            }
+          }
+        })
+        quill.format('font', 'roboto')
+
+        function quillRedo () {
+          quill.history.redo();
+        }
+
+        function quillUndo () {
+          quill.history.undo();
+        }
+
+        // Article ==================================================================================================================================================
+
+        if (About.value.length!=0) {
+          quill.setContents(JSON.parse(About.value))
+        }
+
+        if (article) {
+          uniqueID=article.articlePicID
+          picIdInput.value = uniqueID
+          Title.value=article.title
+          Subtitle.value=article.subtitle
+          Headline.innerHTML=article.title
+          Subline.innerHTML=article.subtitle
+          quill.setContents(JSON.parse(article.quilljs))
+          Content.innerHTML=quill.root.innerHTML
+          Public.checked=article.public
+          Save.disabled=false
+          checkEditor()
+          checkTitle()
+          checkSubtitle()
+          Del.style.display="inline-block"
+          var url = <%-JSON.stringify(url)%>
+          DelSure.href='/de'+url.main.blog+url.blog.delarticle+'?article='+article._id
+          article.tags.forEach(tag => {
+            var i = tags.length
+            tags.push(tag)
+            Tags.innerHTML+=`
+              <span class="mdl-chip mdl-chip--deletable" id="chip-`+i+`">
+                  <span class="mdl-chip__text">`+tag+`</span>
+                  <button type="button" class="mdl-chip__action" onclick="deleteTag(`+i+`)"><i class="material-icons">cancel</i></button>
+              </span>`
+          })
+          if (article.articlePicID!="book") {
+            PrevPhoto.src = url.main.blog+url.blog.pictures+'?picID='+article.articlePicID
+            $uploadCrop.croppie('bind', {
+              url: url.main.blog+url.blog.pictures+'?picID='+article.articlePicID,
+              points: [0,0, sizeW, sizeH]
+            }).then(function() {
+              $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+              $uploadCrop.croppie('setZoom', 1)
+            })
+          }
+        }
+
+        // Validate ==================================================================================================================================================
+        
+        var lastTextChange = Date.now()
+        quill.on('text-change', () => {checkEditor()})
+
+        function checkEditor() {
+          EditorErr.style.visibility="hidden"
+          editorValid=true
+          setTimeout(function() {
+            if ((Date.now()-lastTextChange)>499) {
+              Content.innerHTML=quill.root.innerHTML.replace(/<\/script>/g, "< /script >")
+              About.value=JSON.stringify(quill.getContents())
+            }
+          }, 500)
+          // To print from DB: quill.setContent()
+          if ((new TextEncoder('utf-8').encode(JSON.stringify(quill.getContents()))).length >= 1024*1024*19) {
+            editorValid=false
+            EditorErr.style.visibility = "visible"
+            EditorErr.innerHTML = "Zu viele Daten, vielleicht benutzt du zu viele oder zu große Bilder..."
+          }
+          if (quill.getLength()<256 || quill.getLength() >= 100000) {
+            editorValid=false
+            EditorErr.style.visibility="visible"
+            EditorErr.innerHTML = "Text muss mindestens 256 Buchstaben lang sein!"
+          }
+          validate()
+        }
+        
+        function checkTitle() {
+          Headline.innerHTML=Title.value
+          TitleErr.style.visibility="hidden"
+          titleValid=true
+          if (Title.value.length<3||Title.value.length>50) {
+            titleValid=false
+            if (Title.value.length!=0){
+              TitleErr.style.visibility="visible"
+            }
+          }
+          validate()
+        }
+        
+        function checkSubtitle(){
+          Subline.innerHTML=Subtitle.value
+          SubtitleErr.style.visibility="hidden"
+          subtitleValid=true
+          if (Subtitle.value.length<10||Subtitle.value.length>120) {
+            subtitleValid=false
+            if (Subtitle.value.length!=0) {
+              SubtitleErr.style.visibility="visible"
+            }
+          }
+          validate()
+        }
+
+        function addTag() {
+          var newTag = TagInp.value
+            if (!tags.includes(newTag) && tags.length<=3) {
+              var i = tags.length
+              tags.push(newTag)
+              Tags.innerHTML+=`
+                <span class="mdl-chip mdl-chip--deletable" id="chip-`+i+`">
+                  <span class="mdl-chip__text">`+newTag+`</span>
+                  <button type="button" class="mdl-chip__action" onclick="deleteTag(`+i+`)"><i class="material-icons">cancel</i></button>
+                </span>`
+              PrevTags.innerHTML+=`
+                <span class="mdl-chip" id="prev-chip-`+i+`">
+                  <span class="mdl-chip__text">`+newTag+`</span>
+                </span>`
+              TagInp.value = ""
+            }
+        }
+
+        function checkTag(e) {
+          if (e.which == 13 || e.keyCode == 13) {
+            addTag()
+          }
+        }
+
+        function deleteTag(index) {
+          // TODO: delete and save
+          var delChip = $('#chip-'+index)[0]
+          var delPrevChip = $('#prev-chip-'+index)[0]
+          delChip.innerHTML = ""
+          Tags.removeChild(delChip)
+          PrevTags.removeChild(delPrevChip)
+          tags.splice(index, 1)
+        }
+        
+        function validate() {
+          if (titleValid && editorValid && subtitleValid) {
+            Save.disabled=false
+          }else{
+            Save.disabled=true
+          }
+        }
+        checkTitle()
+        checkSubtitle()
+        
+        // Preview ==================================================================================================================================================
+        function preview() {
+          Preview.style.transform = "translate(0px, 0px)"
+          DialogBG.removeClass('hiddenDisplay')
+          setTimeout(function() {
+            DialogBG[0].style.opacity=0.8
+            Page.addClass('blurred')
+          }, 20)
+        }
+        
+        function closePreview() {
+          Preview.style.transform = "translate(0px, -1056px)"
+          DialogBG[0].style.opacity=0
+          Page.removeClass('blurred')
+          DialogBG.one('transitionend', function(e) {
+            DialogBG.addClass('hiddenDisplay')
+          })
+        }
+        
+        function submit() {
+          About.value=JSON.stringify(quill.getContents())
+          TagJSON.value=JSON.stringify(tags)
+          Length.value=quill.getLength()
+          if ((new TextEncoder('utf-8').encode(About.value)).length <= 1024*1024*19 && Length.value <= 100000) {
+            EditorErr.style.visibility = "hidden"
+            clickSave()
+          }else{
+            EditorErr.style.visibility = "visible"
+            EditorErr.innerHTML = " - Zu viele Daten, vielleicht benutzt du zu viele oder zu große Bilder..."
+          }
+        }
+        
+      </script>
+      <%- include ../footer %>
+    </div>
+    </body>
+</html>

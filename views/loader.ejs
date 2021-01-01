@@ -1,0 +1,18 @@
+<div id="loader-wrapper">
+    <img id="loader" src="/pics/favicon.png">
+
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+</div>
+<script>
+  function loaded () {
+    setTimeout(function() {
+      $('body').addClass('loaded');
+    }, 100)
+  }
+  function unloaded () {
+    $('body').removeClass('loaded');
+  }
+  window.onload = loaded
+  window.onbeforeunload = unloaded
+</script>

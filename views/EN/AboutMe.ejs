@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'About me - Tobias Hölzer', webcontent: 'About Tobias Hölzer. Info, Skills, Strength and Interests.'}) %>
+  <style>
+    #scene{
+      text-align:center;
+      position: relative;
+      margin-top: 600px;
+    }
+    #content-jumper{
+      background: white;
+      padding: 3vw;
+      display: inline;
+    }
+    .anchor-link{
+      font-size: 2.5vw;
+      margin-left: 1%;
+      text-decoration: none;
+    }
+    .anchor-border{
+      border-right: solid 2px #ff4081;
+      padding-right: 1%;
+    }
+    @media screen and (max-width: 600px) {
+      #content-jumper {
+        padding: 6vw;
+      }
+      .anchor-link{
+        font-size: 5vw;
+        margin-left: 2%;
+      }
+      .anchor-border{
+        padding-right: 2%;
+      }
+    }
+    #second-para{
+      font-size: 4vw;
+      color: #eee;
+      position: fixed;
+      top: -400px !important;
+      left: 10% !important;
+      line-height: 5vw;
+    }
+    .content-wrapper{
+      background: white;
+    }
+    .content{
+      padding-top: 3%;
+      padding-bottom: 3%;
+      width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 98%;
+    }
+    .padding{
+      padding: 5%;
+    }
+    .parallax-window {
+      min-height: 400px;
+      background: transparent;
+    }
+    .simple-parallax{
+      height: 400px;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    /* Turn off parallax scrolling for tablets and phones. Increase the pixels if needed */
+    @media only screen and (max-device-width: 1366px) {
+      .simple-parallax {
+        background-attachment: scroll;
+      }
+    }
+    .black{
+      color: white;
+    }
+    .black-hl{
+      background: white;
+      color: #000;
+      margin-top: 21px;
+      margin-bottom: 21px;
+      padding: 24px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      
+    }
+    .black-bg{
+      background: #000;
+    }
+    .center{
+      text-align: center;
+    }
+    .text{
+      text-align: justify;
+      font-size:24px;
+      line-height: 32px;
+    }
+    .demo-layout-transparent {
+      background: linear-gradient(0deg, rgba(255,255,255,0) 75%, rgba(0,0,0,0.5) 100%), url('/pics/parallax/Ganzkörper-Fern.jpg') center / cover;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: white;
+    }
+    h1,
+    h2,
+    h3{
+      font-variant: small-caps;
+    }
+    br{
+      display: block;
+      margin-bottom: 16px;
+    }
+  </style>
+  <script src="/js_css/parallax.min.js"></script>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      <%- include header-transparent %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div data-relative-input="true" id="scene">
+            <div data-depth="0.3" id="second-para">Knowledge is power.</div>
+          </div>
+          <div id="content-jumper">
+            <a class="anchor-link anchor-border" href="#skills">Skills</a>
+            <a class="anchor-link anchor-border" href="#strength">Strength</a>
+            <a class="anchor-link" href="#interests">Interests</a>
+          </div>
+          <div class="content-wrapper">
+            <div class="content">
+              <h1>I am Tobias...</h1>
+              <div class="padding">
+                <p class="text">
+                  ...and I am a nerd. I am 18 years young and come from berlin, germany. I like physics and Star Trek, 
+                  I can program and I have dreams and visions for a better future. But I am also a nice and smart guy. 
+                  I am very communicative, I am interested about the society, politics, sports and live-style, my friends 
+                  are important to me and so are you. If you like to have a talk, you are pleased to contact me over a social network or email.
+                <br>
+                  Today I am a dual student at the Duale Hochschule Baden-Württemberg in Stuttgart working at IBM Germany, 
+                  where I will graduate in 2022. My plans for the future are:
+                </p>
+                <ul class="text">
+                  <li>Master/ PhD</li>
+                  <li>Research for Artificial Intellegance or Quatum Computics</li>
+                  <li>Get the Nobel Price by robots</li>
+                </ul>
+                <p class="text">
+                  You can get to know me better on my blog. I share my views on political and technological 
+                  issues with you there. And you can do that there too! At my blog everyone can sign up and write 
+                  something themselves. So check it out. You can also look around in my 'works' section, where I have published my works 
+                  from school and freetime. You can also find my CV and other certificates there.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/Treppe.jpg);"></div>
+          <div class="content-wrapper black-bg">
+            <div class="content">
+              <a name="skills" id="skills"></a>
+              <h2 class="center">
+                <span class="black-hl">I can...</span>
+              </h2>
+              <div class="padding">
+                <p class="black text">...programm tools in Python, Javascript, C and C#, make awesome presentations, 
+                animate little things and understand complex things like the relativity theory. I have a huge amount 
+                of knowledge, because I am interested in nearly everything.
+                <br>
+                But...
+                <br>
+                ...I cannot speak lots of languages, I am untalented in linguistic. I am scared of doing things wrong 
+                and without the people in my life I would get along well.</p>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/code.jpeg);"></div>
+          <div class="content-wrapper">
+            <div class="content">
+              <a name="strength" id="strength"></a>
+              <h1 class="center">I am...</h1>
+              <div class="mdl-grid padding">
+                <div class="mdl-cell mdl-cell--6-col">
+                  <ul class="text">
+                    <li>intelligent</li>
+                    <li>dependable</li>
+                    <li>attentive</li>
+                    <li>goal-oriented</li>
+                    <li>precise</li>
+                    <li>engaged</li>
+                    <li>friendly</li>
+                  </ul>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                  <ul class="text">
+                    <li>inquisitive</li>
+                    <li>interested</li>
+                    <li>assertive</li>
+                    <li>loyal</li>
+                    <li>indepentend</li>
+                    <li>neat</li>
+                    <li>flexile</li>
+                  </ul>
+                </div>
+              </div>
+              <h1 class="center">but sometimes also...</h1>
+              <div class="padding">
+                <ul class="text center">
+                  <li>bullish</li>
+                  <li>direct</li>
+                  <li>disrespectful</li>
+                  <li>clumsy</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="simple-parallax" style="background-image: url(/pics/parallax/plasmakugel.jpg);"></div>
+          <div class="content-wrapper">
+            <div class="content">
+              <a name="interests" id="interests"></a>
+              <h1 class="center">I like...</h1>
+              <div class="padding">
+                <h3>physic</h3>
+                <p class="text">My biggest dream for the future is to become an important scientist and winning the Nobel 
+                Price. I have always loved complex things which I don't quite understand at the first moment. Furthermore 
+                I am convinced that to understanding the universe is the final frontier of humanity.</p>
+                <h3>it</h3>
+                <p class="text">Luckily for me, my biggest strength is the understanding and application of algorithms. 
+                As a result of this, I am good and rehearsed programer.</p>
+                <h3>chemic</h3>
+                <p class="text">As a part of my physical interest, I am everytime opened to learn more about the behaviour
+                 of atoms. I am faszinated about the complexity of chemical reactions.</p>
+                <h3>psychology</h3>
+                <p class="text">The ultimate complex thing that I know is the human mind. In the last years I've spent a 
+                lot of time with understanding other human beings, now I am good at empathizing with others.</p>
+                <h3>politic</h3>
+                <p class="text">When many complex creatures come together, we call it 'society'. And politics is what a 
+                society holds, guide, and leads. Politics deside about the future of our societies, therefore I'm very 
+                interested in theire systems.</p>
+                <h3>sport</h3>
+                <p class="text">Sports. Games. Fun. I have a huge database from my father in my brain about football. 
+                But I didn't played only football. I also played handball for six years, tabletennis for one year and 
+                just fencing for 4 years. But I know also about other sport a little. American football, baseball, 
+                basketball, tennis, volleyball, icehockey, hockey and of course quidditch.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+    </body>
+    <script>
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+      var scene = document.getElementById('scene');
+      var parallaxInstance = new Parallax(scene);
+    </script>
+</html>

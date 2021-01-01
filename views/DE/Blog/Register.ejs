@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Anmelden - Tobias Hölzer', webcontent: 'Melde dich kostenlos an um deine eigenen Artikel zu schreiben.'}) %>
+  <link href="/js_css/croppie.css" rel="stylesheet"/>
+  <style>
+    .page-wrapper{
+      width: 80%;
+      min-width: 324px;
+      max-width: 712px;
+      margin-top: 3%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 3%;
+    }
+    .page-content{
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .hidden{
+      visibility: hidden;
+      display: block !important;
+    }
+    .data-input{
+      display: block;
+      text-align: center;
+    }
+    .dialog{
+      position: fixed; /* Sit on top of the page content */
+      overflow-y: auto;
+      transform: translate(0px, -1056px);
+      transition: 0.3s ease-out;
+      width: 80%;
+      max-width: 712px;
+      height: calc(97% - 122px);
+      left: 50%;
+      max-height: 100%;
+      top: 122px;
+      margin-left: -366px;
+      background: #fff;
+      z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+    @media only screen and (max-width: 890px) {
+      .dialog{
+        margin-left: -40%;
+      }
+    }
+
+    #dialog-bg{
+      position: fixed;
+      min-width: 100%;
+      top: 0%;
+      width: 100%;
+      min-height: 100%;
+      height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 1;
+      transition: 0.3s;
+    }
+    .blurred{
+      -webkit-filter: blur(10px);
+      -moz-filter: blur(10px);
+      -ms-filter: blur(10px);
+      -o-filter: blur(10px);
+      filter: blur(10px); 
+    }
+    .hiddenDisplay{
+      display: none;
+    }
+
+    .dialog .mdl-dialog__content{
+      padding-bottom: 0px;
+    }
+    .dialog .mdl-dialog__content .upload-img-wrap{
+      margin-bottom: 0px;
+    }
+
+    .upload-img .upload-img-wrap,
+    .upload-img .upload-result,
+    .upload-img.ready .upload-msg {
+      display: none;
+    }
+    .upload-img.ready .upload-img-wrap {
+      display: block;
+    }
+    .upload-img.ready .upload-result {
+      display: inline-block;    
+    }
+    .upload-img-wrap {
+      width: 600px;
+      height: 600px;
+      margin: 0 auto;
+      margin-bottom: 12px;
+    }
+    #upload{
+      display: none;
+    }
+
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .page-wrapper{
+        max-width: 366px;
+      }
+      .upload-img-wrap {
+        width: 300px;
+        height: 300px;
+      }
+    }
+
+
+    .page-content-wide{
+      width: 90%;
+      text-align: left;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .profile-pic{
+      width: 95%;
+      max-width: 256px;
+      border: solid #000 2px;
+      border-radius: 50%;
+    }
+    .nextStepWrapper{
+      text-align: center;
+    }
+    .mainText{
+      margin-bottom: 3px;
+      margin-top: 0;
+    }
+    .subText{
+      margin-bottom: 5px;
+      margin-top: 3px;
+      font-size: 16px;
+    }
+    .aboutText{
+      margin-top: 20px;
+    }
+    .inline{
+      display: inline;
+    }
+
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    main{
+      min-height: 820px;
+      /* Images from:
+      https://www.pexels.com/photo/photo-of-woman-674268/ 
+      https://www.pexels.com/photo/adult-alone-blur-close-up-1172207/
+      https://www.pexels.com/photo/woman-carrying-black-backpack-2346112/ */
+      background: url('/pics/parallax/pxls.student.jpg') fixed no-repeat;
+      background-size: cover;
+      background-position: center; 
+    }
+    #container{
+      width: 350px;
+      height: 670px;
+      background: inherit;
+      position: absolute;
+      overflow: hidden;
+      left: 50%;
+      margin-left: -175px;
+      border-radius: 8px;
+    }
+    #container:before{
+      width: 400px;
+      height: 720px;
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: -25px;
+      bottom: 0;
+      right: 0;
+      background: inherit;
+      box-shadow: inset 0 0 0 200px rgba(255,255,255,0.2);
+      -webkit-filter: blur(10px);
+      filter: blur(10px);
+    }
+    #container-wide{
+      width: 450px;
+      height: 770px;
+      background: inherit;
+      position: absolute;
+      overflow: hidden;
+      left: 50%;
+      top: 5%;
+      margin-left: -225px;
+      border-radius: 8px;
+    }
+    #container-wide:before{
+      width: 500px;
+      height: 820px;
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: -25px;
+      bottom: 0;
+      right: 0;
+      background: inherit;
+      box-shadow: inset 0 0 0 200px rgba(255,255,255,0.2);
+      -webkit-filter: blur(10px);
+      filter: blur(10px);
+    }
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <% if(err!="success") { %>
+          <div class="page-wrapper" id="container">
+            <div class="page-content"><!-- Your content goes here -->
+              <form action="/de<%=url.main.blog%><%=url.blog.register%>" method="post" id="regform">
+                <h1 class="mainText">Hallo!</h1>
+                <h5 class="subText">Bitte fülle die folgenden Felder.</h5>
+                <p class="subText">Du hast schon einen Account? <a href="/de<%=url.main.blog+url.blog.login%>">Einloggen</a></p>
+                <% if (err) { %><h3>Irgendetwas lief schief!</h3><%}%>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <input class="mdl-textfield__input" type="text" id="username" name="username" onkeyup="checkUsername()" value="<%= data.username %>" maxlength="30">
+                  <label class="mdl-textfield__label" for="username">Benutzername</label>
+                  <span class="mdl-textfield__error hidden" id="username_err">Benutzername ist nicht verfügbar!</span>
+                  <span class="mdl-textfield__error hidden" id="username_err">Benutzername darf nicht länger als 30 Buchstaben sein!</span>
+                  <span class="mdl-textfield__error hidden" id="username_check">Prüfe Verfügbarkeit!</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <input class="mdl-textfield__input" type="password" id="password" name="password" onkeyup="checkPassword()" value="<%= data.password %>" minlength="4">
+                  <label class="mdl-textfield__label" for="password">Passwort</label>
+                  <span class="mdl-textfield__error hidden" id="password_check">Passwort muss mindestens 4 Buchstaben lang sein!</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <input class="mdl-textfield__input" type="password" id="password_confirm" name="password_confirm" onkeyup="checkPassword()" value="<%= data.password %>">
+                  <label class="mdl-textfield__label" for="password_confirm">Bestätige Passwort</label>
+                  <span class="mdl-textfield__error hidden" id="password_err">Passwörter stimmen nicht überein!</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <input class="mdl-textfield__input" type="text" id="firstname" name="firstname" value="<%= data.firstname %>" maxlength="30">
+                  <label class="mdl-textfield__label" for="firstname">Vorname</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <input class="mdl-textfield__input" type="text" id="lastname" name="lastname" value="<%= data.lastname %>" maxlength="30">
+                  <label class="mdl-textfield__label" for="lastname">Nachname</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                  <textarea class="mdl-textfield__input" type="text" rows= "5" id="about" name="about" maxlength="256"><%= data.about %></textarea>
+                  <label class="mdl-textfield__label" for="about">Über dich</label>
+                </div>
+                <input type="hidden" id="picid" name="picid" value="0">
+              </form>
+
+              <div style="float: right">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="photomode" onclick="pictureMode()">
+                  <i class="material-icons">photo</i>
+                </button>
+
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="saveImage()" id="register" disabled>
+                  Anmelden
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mdl-dialog dialog" id="dialog">
+            <div style="float: right;">
+              <button type="button" class="mdl-button" id="dialog_close" onclick="closePictureMode()"><i class="material-icons">close</i></button>
+            </div>
+            <h4 class="mdl-dialog__title">Lade ein Profilbild hoch</h4>
+            <h5 class="mdl-dialog__title subText">Auf manchen Seiten ist das Profilbild abgeschnitten.</h5>
+            <div class="mdl-dialog__content">
+              <div class="upload-img-wrap">
+                <div id="upload-img"></div>
+              </div>
+              <input type="file" id="upload" value="Choose a file" accept="image/*" />
+            </div>
+            <div class="mdl-dialog__actions">
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="closePictureMode()" id="save">Speichern</button>
+              <button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="clickSelect()" id="save">Auswählen</button>
+            </div>
+          </div>
+            
+          <div id="picToast" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+          </div>
+    
+          <div id="dialog-bg" class="hiddenDisplay" onclick="closePictureMode()"></div>
+          <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="dialog_close">Schließen</div>
+          <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="photomode">Profilbild</div>
+
+        <%}else{%>
+          <div id="container-wide">
+            <div class="page-content-wide">
+              <h1>Wilkommen!</h1>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--4-col">
+                  <img class="profile-pic" src="<%= url.main.blog+url.blog.pictures+'?picID='+author.profilePicID%>">
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                    <h3 class="mainText"><%= author.username %></h3>
+                    <h5 class="subText"><%= author.firstname %> <%= author.lastname %></h5>
+                    <p class="aboutText"><%= author.about %></p>
+                </div>
+              </div>
+              <h5>Wilkommen zu meinem Blog. Du kannst sofort anfangen zu schreiben.</h5>
+              <div class="nextStepWrapper"><a href="/de<%=url.main.blog+url.blog.write%>" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored nextStep">
+                <i class="material-icons">arrow_forward</i>
+              </a></div>
+            </div>
+          </div>
+        <%}%>
+      </main>
+      <% if(err!="success") { %>
+      <script src="/js_css/croppie.min.js"></script>
+      <script>
+        // to trick vs
+        if (true) {
+
+        // Get all important HTML Elements
+        var UsernameInput = $('#username')[0]
+        var PasswordInput = $('#password')[0]
+        var ConfirmInput = $('#password_confirm')[0]
+        var picIdInput = $('#picid')[0]
+        var RegisterButton = $('#register')[0]
+        var RegForm = $('#regform')[0]
+        var Dialog = $('#dialog')
+        var DialogBG = $('#dialog-bg')
+        var Page = $('.page-wrapper')
+
+        var snackbarContainer = $('#picToast')[0];
+
+        var UsernameCheck = $('#username_check')[0]
+        var PasswordCheck = $('#password_check')[0]
+        var UsernameErr = $('#username_err')[0]
+        var PasswordErr = $('#password_err')[0]
+
+        // Set Verification Valid and Counter
+        var usernameValid = false
+        var passwordValid = false
+        var checkCounter = 0
+        
+        // On Load
+        RegisterButton.disabled=true
+        
+        
+        // Verify Username
+        var lastUsername
+        function checkUsername() {
+          lastUsername = Date.now()
+          setTimeout(function() {
+            if ((Date.now()-lastUsername)>499) {
+              checkCounter++
+              usernameValid=false
+              UsernameCheck.style.visibility="visible"
+              UsernameErr.style.visibility="hidden"
+              socket.emit("registerRequestUsernameValidation" , {username: UsernameInput.value})
+            }
+          }, 500)
+        }
+        
+        socket.on("registerResponseUsernameValidation", function (data) {
+          checkCounter--
+          if (checkCounter<=0) {
+            UsernameCheck.style.visibility="hidden"
+            if (data.valid && UsernameInput.value.length>=1 && !UsernameInput.value.includes(" ")) {
+              UsernameErr.style.visibility="hidden"
+              usernameValid=true
+            }else if (UsernameInput.value.length==0){
+              UsernameErr.style.visibility="hidden"
+              usernameValid=false
+            }else{
+              UsernameErr.style.visibility="visible"
+              usernameValid=false
+            }
+            validate()
+          }
+        })
+
+        // Verify Password
+        function checkPassword() {
+          if (PasswordInput.value.length>=4) {
+            PasswordCheck.style.visibility="hidden"
+            if (PasswordInput.value==ConfirmInput.value) {
+              PasswordErr.style.visibility="hidden"
+              passwordValid=true
+            }else {
+              PasswordErr.style.visibility="visible"
+              passwordValid=false
+            }
+          }else if (PasswordInput.value.length!=0){
+            PasswordCheck.style.visibility="visible"
+            passwordValid=false
+          }else{
+            PasswordErr.style.visibility="hidden"
+            PasswordCheck.style.visibility="hidden"
+            passwordValid=false
+          }
+          validate()
+        }
+        
+        // Change Register Status
+        function validate() {
+          if (passwordValid&&usernameValid) {
+            RegisterButton.disabled=false
+          }else {
+            RegisterButton.disabled=true
+          }
+        }
+
+        checkUsername()
+        checkPassword()
+        
+        // Picture Mode
+        function pictureMode(){
+          clickSelect()
+          Dialog[0].style.transform = "translate(0px, 0px)"
+          DialogBG.removeClass('hiddenDisplay')
+          setTimeout(function() {
+            DialogBG[0].style.opacity=0.8
+            Page.addClass('blurred')
+          }, 20)
+
+        }
+        function closePictureMode(){
+          Dialog[0].style.transform = "translate(0px, -1056px)"
+          DialogBG[0].style.opacity=0
+          Page.removeClass('blurred')
+          DialogBG.one('transitionend', function(e) {
+            DialogBG.addClass('hiddenDisplay')
+          })
+        }
+        
+        // Croppie
+        function clickSelect(){
+          $('#upload')[0].click()
+        }
+        function saveImage(){
+          if ($('#upload')[0].files.length!=0 && binded) {
+            Dialog[0].style.visibility="hidden"
+            Dialog[0].style.display="block"
+            $uploadCrop.croppie('result', {
+              type: 'canvas',
+              size: {width: 512, height: 512}
+            }).then(function (resp) {
+              socket.emit("uploadImage" , {src: resp, uniqueID: uniqueID, typeCode: "profilecode-"})
+            });
+          }else{
+            if (uniqueID==0||uniqueID=="0") {
+              uniqueID = "avatar"
+              picIdInput.value = uniqueID
+            }
+            RegForm.submit()
+          }
+        }
+        
+        uniqueID = 0
+        binded = false
+        $('#upload-img').click(function() {
+          if (!binded) {
+            clickSelect()
+          }
+        })
+        
+        socket.on("uniqueCode", function(data) {
+          uniqueID = data.code
+          picIdInput.value = uniqueID
+          RegForm.submit()
+        })
+        
+        /*socket.on("picSaved", function(data) {
+          snackbarContainer.MaterialSnackbar.showSnackbar({message: data.messageEN})
+        })
+
+        window.onbeforeunload = function() {
+          if (uniqueID!=0 && uniqueID!="0") {
+            socket.emit("leavedImage", {id: uniqueID})
+          }
+        }*/
+        
+        var picImgInput
+        function readFile(input) {
+          picImgInput = input
+          if (input.files && input.files[0]) {
+            var reader = new FileReader()
+            reader.onload = function (e) {
+              $('.upload-img-wrap').addClass('ready')
+              $uploadCrop.croppie('bind', {
+                url: e.target.result
+              }).then(function(){
+                binded = true
+              })
+            }
+            reader.readAsDataURL(input.files[0]);
+          }
+          else {
+            snackbarContainer.MaterialSnackbar.showSnackbar({message: "Dein Browser ist zu alt!"})
+          }
+        }
+
+        var size = 512,
+            bound = 88,
+            zoom = 1
+        if ($(document).width()<=768 || $( document ).height()<=736) {
+          size = 256
+          bound = 44
+          zoom = 0.5
+        }
+
+        var lastWindowWidth = $(document).width()
+        var lastWindowHeight = $( document ).height()
+        window.onresize = function(){
+          if ((lastWindowWidth <= 768 && $(document).width() > 768) ||
+              (lastWindowWidth > 768 && $(document).width() <= 768) ||
+              (lastWindowHeight <= 736 && $(document).height() > 736) ||
+              (lastWindowHeight > 736 && $(document).height() <= 736)) {
+            var size = 512,
+              bound = 88,
+              zoom = 1
+            if ($(document).width()<=768 || $( document ).height()<=736) {
+              size = 256
+              bound = 44
+              zoom = 0.5
+            }
+            $uploadCrop.croppie('destroy', {})
+            $('.upload-img-wrap').removeClass('ready');
+            $("#upload-img").html("");
+            $uploadCrop=null;
+
+            $uploadCrop = $('#upload-img').croppie({
+              viewport: {
+                width: size,
+                height: size,
+                type: 'square'
+              },
+              boundary: {width: (size+bound), height: (size+(0.2*bound))}
+            });
+            if (binded) {
+              readFile(picImgInput)
+            }else{
+              $uploadCrop.croppie('bind', {
+                url: "/pics/Standard/standard-avatar.png",
+                points: [0,0, size, size]
+              }).then(function() {
+                $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+                $uploadCrop.croppie('setZoom', zoom)
+              })
+            }
+          }
+          lastWindowWidth = $(document).width()
+          lastWindowHeight = $( document ).height()
+        }
+
+        var $uploadCrop = $('#upload-img').croppie({
+          viewport: {
+            width: size,
+            height: size,
+            type: 'square'
+          },
+          boundary: {width: (size+bound), height: (size+(0.2*bound))}
+        });
+
+        $uploadCrop.croppie('bind', {
+          url: "/pics/Standard/standard-avatar.png",
+          points: [0,0, size, size]
+        }).then(function() {
+          $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+          $uploadCrop.croppie('setZoom', zoom)
+        })
+
+        $('#upload')[0].value = ""
+        $('#upload').on('change', function () { readFile(this); });
+        }
+      </script>
+      <%}%>
+      <%- include ../footer %>
+    </div>
+  </body>
+</html>

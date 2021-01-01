@@ -1,0 +1,56 @@
+<header class="mdl-layout__header">
+  <div class="mdl-layout__header-row">
+    <!-- Title -->
+    <a class="mdl-navigation__link" href="/en<%=url.main.route%>">
+      <span class="mdl-layout-title titlename"><img class="title-t" src="/pics/favicon.png" alt="T">obias Hölzer</span>
+    </a>
+    <!-- Add spacer, to align navigation to the right -->
+    <div class="mdl-layout-spacer"></div>
+    <!-- Navigation. We hide it in small screens. -->
+    <nav class="mdl-navigation mdl-layout--large-screen-only">
+      <a class="mdl-navigation__link" href="/en<%=url.main.route%>"><i class="material-icons">home</i></a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.aboutme%>">about me</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.work%>">work</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.blog%>">blog</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.references%>">contact</a>
+    </nav>
+  </div>
+  <!-- Tabs -->
+  <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+    <a href="/en<%=url.main.blog%>" class="mdl-layout__tab">Start</a>
+    <a href="/en<%=url.main.blog+url.blog.articles%>" class="mdl-layout__tab">Articles</a>
+    <a href="/en<%=url.main.blog+url.blog.authors%>" class="mdl-layout__tab">Bloggers</a>
+    <% if (isAuthenticated) {%>
+      <a href="/en<%=url.main.blog+url.blog.write%>" class="mdl-layout__tab">Write</a>
+      <a href="/en<%=url.main.blog+url.blog.profile%>" class="mdl-layout__tab">Profile</a>
+      <a href="/en<%=url.main.blog+url.blog.logout%>" class="mdl-layout__tab">Logout</a>
+    <%}else{%>
+      <a href="/en<%=url.main.blog+url.blog.login%>" class="mdl-layout__tab">Login</a>
+      <a href="/en<%=url.main.blog+url.blog.register%>" class="mdl-layout__tab">Sign up</a>
+    <%}%>
+    <a style="width: 36px; visibility: hidden;" class="mdl-layout__tab"></a>
+  </div>
+  <script>
+    $('.mdl-layout__tab').each(function () {
+      if (this.href == window.location.href) {
+        $(this).addClass("is-active")
+      }
+    })
+  </script>
+</header>
+
+<div class="mdl-layout__drawer">
+  <span class="mdl-layout-title titlename">Tobias Hölzer</span>
+  <nav class="mdl-navigation">
+    <a class="mdl-navigation__link" href="/en<%=url.main.route%>"><i class="material-icons">home</i></a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.aboutme%>">about me</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.work%>">work</a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.blog%>">blog</a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.references%>">contact</a>
+    <hr>
+    <a class="mdl-navigation__link" href="<%=url.main.lang+'?path=/'+originalUrl.split('/').slice(2).join('/')%>">
+      <img class="lang-nav-img" src="/pics/germany.png" alt="Deutsch">
+      <img class="lang-nav-img" src="/pics/united-kingdom.png" alt="English">
+    </a>
+  </nav>
+</div>

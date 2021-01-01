@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Artikel - Tobias Hölzer', webcontent: 'Suche einen spezifischen Artikel oder browse durch die Datenbank.'}) %>
+  <style>
+    .page-content{
+      width: 80%;
+      margin-top: 3%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+     @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .page-content{
+        width: 99%;
+      }
+      .demo-card-wide.mdl-card {
+        width: 80%;
+      }
+    }
+
+    .demo-card-wide > .mdl-card__title {
+      color: #fff;
+      min-height: 200px;
+      height: 21vw;
+    }
+    .mdl-card__title-text {
+      font-size: 30px;
+    }
+    .demo-card-wide > .mdl-card__supporting-text {
+      color: rgba(0,0,0, .76);
+      font-size: calc(9px + 0.6vw);
+      max-height: 70%;
+    }
+    .demo-card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+    .demo-card-wide.mdl-card {
+      min-width: 256px;
+      width: 46%;
+      max-width: 1024px;
+      transition: .15s ease-out;
+      border-radius: 8px;
+    }
+    .mdl-card:hover {
+      transform: translateY(-10px)
+    }
+
+    
+    .article-views{
+      text-align: right;
+      font-size: 14px;
+      height: 18px;
+      margin-bottom: 0;
+    }
+    .article-views-wrapper{
+      float: right;
+    }
+    .tags{
+      overflow-x: auto;
+    }
+    .inline{
+      display: inline-block;
+    }
+
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <h1 class="mainText">Artikel</h1>
+          <div class="inline" id="search-container">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+              <label class="mdl-button mdl-js-button mdl-button--icon" for="search" id="seach-icon">
+                <i class="material-icons">search</i>
+              </label>
+              <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" type="text" id="search" onkeyup="find()">
+                <label class="mdl-textfield__label" for="search">Suche einen Artikel</label>
+              </div>
+            </div>
+            <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner" id="spinner"></div>
+          </div>
+          <div class="mdl-grid" id="article-container">
+            <%articles.forEach(function(article) { if (article.public) {%>
+              <div class="mdl-cell mdl-cell--4-col demo-card-wide mdl-card mdl-shadow--2dp" >
+                <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                                                    url(<%=url.main.blog+url.blog.pictures%>?picID=<%=article.articlePicID+"#"+articles.indexOf(article)%>)
+                                                    center/cover no-repeat;">
+                  <h2 class="mdl-card__title-text"><%=article.title%></h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                  <% if (article.subtitle.lastIndexOf(" ")!=-1 && article.subtitle.length>=200) { %>
+                    <%= article.subtitle.substring(0, Math.min(400, article.subtitle.substring(0, 400).lastIndexOf(" ")))%>...
+                  <% }else{ %>
+                    <%= article.subtitle.substring(0, 400) %>
+                  <% }%>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                  <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de<%=url.main.blog+url.blog.articles%>?article=<%=article._id%>">
+                    Artikel lesen
+                  </a>
+                  <div class="article-views-wrapper">
+                    <p class="article-views">Aufrufe: <%=article.visitors%></p>
+                    <p class="article-views" id="d-<%=article._id%>">Geschrieben <%=article.date%></p>
+                  </div>
+                </div>
+                <div class="mdl-card__menu tags">
+                <% article.tags.forEach(function(tag) { %>
+                  <span class="mdl-chip">
+                    <span class="mdl-chip__text"><%= tag %></span>
+                  </span>
+                <%})%>
+                </div>
+              </div>
+            <%}})%>
+          </div>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="seach-icon">Suchen</div>
+      </main>
+      <script src="/js_css/moment.js"></script>
+      <script>
+        var ArticleContainer = $('#article-container')[0]
+        var Spinner = $('#spinner')
+        var SearchInp = $('#search')[0]
+        
+        var queries = 0
+        var url = <%-JSON.stringify(url)%>
+        var articles = <%-JSON.stringify(articles)%>
+
+        articles.forEach(function(article) {
+          if (article.public) {
+            $('#d-'+article._id.toString())[0].innerHTML = "Geschrieben "+ moment(article.date).locale('de').fromNow() + " von " + article.author.username
+          }
+        })
+
+        function find() {
+          queries++
+          if (!Spinner.hasClass("is-active")) {
+            Spinner.addClass("is-active")
+          }
+          socket.emit("searchArticleRequest", {word: SearchInp.value})
+        }
+
+        socket.on("searchArticleResult", function (data) {
+          queries--
+          if (queries==0 && Spinner.hasClass("is-active")) {
+            Spinner.removeClass("is-active")
+          }
+          ArticleContainer.innerHTML = ""
+          if (data.articles.length==0) {
+            ArticleContainer.innerHTML = `<h5 class="subText">Es scheint, als ob das was du suchst nicht hier ist...</h5>`
+          }
+          data.articles.forEach(function(article) {
+            if (article.public) {
+              var subtitle,
+                  tags = ""
+              if (article.subtitle.lastIndexOf(" ")!=-1 && article.subtitle.length>=400) {
+                subtitle = article.subtitle.substring(0, Math.min(400, article.subtitle.substring(0, 400).lastIndexOf(" ")))+"..."
+              }else{
+                subtitle = article.subtitle.substring(0, 400)
+              }
+              article.tags.forEach(function(tag) {
+                tags += `
+                <span class="mdl-chip">
+                  <span class="mdl-chip__text">`+tag+`</span>
+                </span>`
+              })
+              ArticleContainer.innerHTML += `
+              <div class="mdl-cell mdl-cell--4-col demo-card-wide mdl-card mdl-shadow--2dp" >
+                <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                                                    url(`+url.main.blog+url.blog.pictures+`?picID=`+article.articlePicID+"#"+data.articles.indexOf(article)+`)
+                                                    center/cover no-repeat;">
+                  <h2 class="mdl-card__title-text">`+article.title+`</h2>
+                </div>
+                <div class="mdl-card__supporting-text">`+subtitle+`</div>
+                <div class="mdl-card__actions mdl-card--border">
+                  <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de`+url.main.blog+url.blog.articles+`?article=`+article._id+`">
+                    Read Article
+                  </a>
+                  <div class="article-views-wrapper">
+                    <p class="article-views">Aufrufe: `+article.visitors+`</p>
+                    <p class="article-views" id="d-`+article._id+`">Geschrieben `+moment(article.date).locale('de').fromNow()+` von `+ article.author.username+`</p>
+                  </div>
+                </div>
+                <div class="mdl-card__menu tags">
+                `+tags+`
+                </div>
+              </div>`
+            }
+          })
+        })
+      </script>
+      <%- include ../footer %>
+    </div>
+    </body>
+</html>

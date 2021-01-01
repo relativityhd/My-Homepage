@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Tobias Hölzer - Homepage'}) %>
+  <style>
+    #scene{
+      text-align:center;
+      position: relative;
+    }
+    #first-para{
+      left:0px !important;
+      top: 0px !important;
+    }
+    #first-para-pic{
+      width: 512px;
+      height: auto;
+    }
+    #second-para{
+      font-size: calc(24px + 3vw);
+      color: #fff;
+      position: fixed;
+      top: 500px !important;
+      left: calc(20% - 20px) !important;
+      line-height: 5vw;
+    }
+    #content-wrapper{
+      background: white;
+      margin-top: 800px;
+      padding: 3%;
+      z-index: 100;
+    }
+    #text-wrapper{
+      text-align: center;
+      width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 98%;
+    }
+    #text{
+      color: white;
+      background: #000;
+      font-size: 36px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      padding: 12px;
+      line-height: 48px;
+    }
+    #links{
+      background: #000;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+    #social-networks{
+      background: white;
+      text-align: center;
+      padding-top: 47px;
+      padding-bottom: 77px;
+    }
+    .none{
+      opacity: 0;
+    }
+    .none:hover{
+      cursor: default;
+    }
+    .btn-none,
+    .btn-none:hover{
+      border: none;
+      background: none;
+      color: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 1%;
+    }
+    .sn-icon{
+      width: 64px;
+      height: auto;
+    }
+    .sn-link{
+      text-decoration: none;
+      margin: 1%;
+    }
+    .center{
+      text-align: center;
+    }
+    .anchor-link{
+      font-size: 48px;
+      line-height: 64px;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    .demo-layout-transparent {
+      background: url('/pics/parallax/Fronter.jpg') center / cover;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: white;
+    }
+    h1,
+    h2,
+    h3{
+      font-variant: small-caps;
+    }
+    br{
+      display: block;
+      margin-bottom: 16px;
+    }
+  </style>
+  <script src="/js_css/parallax.min.js"></script>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      <%- include header-transparent %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div data-relative-input="true" id="scene">
+            <div data-depth="0.2" id="second-para">For the future.</div>
+          </div>
+          <div id="content-wrapper">
+            <h1 class="center">HEY</h1>
+            <div id="text-wrapper">
+              <p id="text">I am Tobias Hölzer and a 19 year old student from Berlin. IT and physics are my business.</p>
+            </div>
+          </div>
+          <div id="links">
+              <a class="anchor-link anchor-border" href="/en<%=url.main.aboutme%>">about</a>
+              <a class="anchor-link anchor-border" href="/en<%=url.main.work%>">work</a>
+              <a class="anchor-link anchor-border" href="/en<%=url.main.blog%>">blog</a>
+              <a class="anchor-link" href="/en<%=url.main.references%>">contact</a>
+            </div>
+          <div id="social-networks">
+            <h3>visits: <%= server.visitors %></h3>
+            <a class="sn-link" href="https://www.linkedin.com/in/tobias-h%C3%B6lzer-281b72193/" target="_blank">
+              <img class="sn-icon" src="/pics/SN-Icons/linkedin.png" alt="LinkedIn">
+            </a>
+            <a class="sn-link" href="https://twitter.com/tobiashoelzer" target="_blank">
+              <img class="sn-icon" src="/pics/SN-Icons/twitter.png" alt="Twitter">
+            </a>
+            <a class="sn-link" href="https://www.instagram.com/tobi.t.hoelzer/" target="_blank">
+              <img class="sn-icon" src="/pics/SN-Icons/instagram.png" alt="Instagram">
+            </a>
+            <button id="discord-show-snackbar" class="btn-none" type="button">
+              <img class="sn-icon" src="/pics/SN-Icons/discord.png" alt="Discord">
+            </button>
+            <div id="discord-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text"></div>
+              <button class="mdl-snackbar__action" type="button"></button>
+            </div>
+            <button id="skype-show-snackbar" class="btn-none" type="button">
+              <img class="sn-icon" src="/pics/SN-Icons/skype.png" alt="Sykpe">
+            </button>
+            <div id="skype-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text"></div>
+              <button class="mdl-snackbar__action" type="button"></button>
+            </div>
+            <button id="whatsapp-show-snackbar" class="btn-none" type="button">
+              <img class="sn-icon" src="/pics/SN-Icons/whatsapp.png" alt="Whatsapp">
+            </button>
+            <div id="whatsapp-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text"></div>
+              <button class="mdl-snackbar__action" type="button"></button>
+            </div><br>
+            <input class="none" id="input-discord" type="text" value="Relativity#1526"/>
+            <input class="none" id="input-skype" type="text" value="freakitdowwn"/>
+            <input class="none" id="input-whatsapp" type="text" value="0179 7211240"/>
+          </div>
+          <script>
+          
+            function init (name, value) {
+              'use strict';
+              var snackbarContainer = document.querySelector('#'+name+'-snackbar-example');
+              var showSnackbarButton = document.querySelector('#'+name+'-show-snackbar');
+              var handler = function(event) {
+                var copyText = document.querySelector("#input-"+name);
+                copyText.select();
+                document.execCommand("copy");
+              }
+              showSnackbarButton.addEventListener('click', function() {
+                'use strict';
+                var data = {
+                  message: value,
+                  timeout: 5000,
+                  actionHandler: handler,
+                  actionText: 'Copy'
+                }
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+              })
+            }
+
+            var SNs = [{name: "discord", value: "Relativity#1526"}, {name: "skype", value: "freaktitdowwn"}, {name: "whatsapp", value: "0179 7211240"}]
+            SNs.forEach(function(sn) {
+              init(sn.name, sn.value)
+            })
+          </script>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+  </body>
+  <script>
+    var scene = document.getElementById('scene');
+    var parallaxInstance = new Parallax(scene);
+  </script>
+</html>

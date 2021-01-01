@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Profil von '+author.username, webcontent: author.username+", "+author.firstname+author.lastname+" - "+author.about}) %>
+  <link href="/js_css/croppie.css" rel="stylesheet"/>
+  <style>
+    .page-content{
+      width: 60%;
+      margin-top: 3%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 3%;
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .page-content{
+        width: 99%;
+      }
+    }
+    .hidden{
+      visibility: hidden;
+      display: block !important;
+    }
+    .dialog{
+      position: fixed; /* Sit on top of the page content */
+      overflow-y: auto;
+      transform: translate(0px, -1056px);
+      transition: 0.3s ease-out;
+      width: 60%;
+      max-width: 800px;
+      max-height: calc(97% - 122px);
+      left: 50%;
+      top: 122px;
+      margin-left: -400px;
+      background: #fff;
+      z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+    @media only screen and (max-width: 1333px) {
+      .dialog{
+        margin-left: -30%;
+      }
+    }
+    #pic-dialog{
+      width: 80%;
+      max-width: 712px;
+      margin-left: -366px;
+      height: calc(97% - 122px);
+    }
+    @media only screen and (max-width: 890px) {
+      #pic-dialog{
+        margin-left: -40%;
+      }
+    }
+    .centered{
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dialog-bg{
+      position: fixed;
+      min-width: 100%;
+      top: 0%;
+      width: 100%;
+      min-height: 100%;
+      height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 1;
+      transition: 0.3s;
+    }
+    .blurred{
+      -webkit-filter: blur(10px);
+      -moz-filter: blur(10px);
+      -ms-filter: blur(10px);
+      -o-filter: blur(10px);
+      filter: blur(10px); 
+    }
+    .hiddenDisplay{
+      display: none;
+    }
+
+
+    .data-input{
+      display: block;
+      text-align: center;
+    }
+
+    .upload-img .upload-img-wrap,
+    .upload-img .upload-result,
+    .upload-img.ready .upload-msg {
+      display: none;
+    }
+    .upload-img.ready .upload-img-wrap {
+      display: block;
+    }
+    .upload-img.ready .upload-result {
+      display: inline-block;    
+    }
+    .upload-img-wrap {
+      width: 600px;
+      height: 600px;
+      margin: 0 auto;
+      margin-bottom: 12px;
+    }
+    #upload{
+      display: none;
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .page-wrapper{
+        max-width: 366px;
+      }
+      .upload-img-wrap {
+        width: 300px;
+        height: 300px;
+      }
+    }
+
+    .author-wrapper{
+      margin-bottom: 100px;
+    }
+    .mainText{
+      margin-bottom: 3px;
+      margin-top: 0;
+    }
+    .subText{
+      margin-bottom: 5px;
+      margin-top: 3px;
+      font-size: 16px;
+      color: rgba(0,0,0, .55);
+    }
+    .aboutText{
+      margin-top: 20px;
+      font-size: 18px;
+      color: rgba(0,0,0, .75);
+    }
+    .profile-pic{
+      width: 95%;
+      max-width: 512px;
+      max-height: 512px;
+      border-radius: 8px;
+      -webkit-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      -moz-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+    }
+
+    
+    .demo-card-wide.mdl-card {
+      width: 80%;
+    }
+    .demo-card-wide > .mdl-card__title {
+      color: #fff;
+      min-height: 200px;
+      height: 21vw;
+    }
+    .mdl-card__title-text {
+      font-size: 30px;
+    }
+    .demo-card-wide > .mdl-card__supporting-text {
+      color: rgba(0,0,0, .76);
+      font-size: calc(9px + 0.6vw);
+      max-height: 70%;
+    }
+    .demo-card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+    .demo-card-wide.mdl-card {
+      min-width: 256px;
+      width: 46%;
+      max-width: 1024px;
+      border-radius: 8px;
+      transition: .15s ease-out;
+    }
+    .mdl-card:hover {
+      transform: translateY(-10px)
+    }
+    .articles-grid{
+      min-width: 240px;
+    }
+    .article-views{
+      float: right;
+    }
+    .inline{
+      display: inline-block;
+    }
+    .tags{
+      overflow-x: auto;
+    }
+    .nextStepWrapper{
+      text-align: center;
+    }
+
+  </style>
+  <body onload="onload()">
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <div class="page-content" id="content"><!-- Your content goes here -->
+          <div class="mdl-grid author-wrapper">
+            <div class="mdl-cell mdl-cell--4-col content">
+              <img class="profile-pic" id="max-photo" src="<%= url.main.blog+url.blog.pictures+'?picID='+author.profilePicID%>">
+            </div>
+            <div class="mdl-cell mdl-cell--6-col">
+                <h3 class="mainText"><%= author.username %></h3>
+                <h5 class="subText"><%= author.firstname %> <%= author.lastname %></h5>
+                <h5 class="subText" id="author-date">Angemeldet</h5>
+                <script src="/js_css/moment.js"></script>
+                <script>
+                  var author = <%-JSON.stringify(author)%>;
+                  $('#author-date')[0].innerHTML += " "+ moment(author.dateSignUp).fromNow()
+                </script>
+                <p class="aboutText"><%= author.about %></p>
+                <%if (isUser&&author) {%>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="editorMode()" id="opt-edit">
+                      <i class="material-icons">create</i>
+                  </button>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="pictureMode()" id="opt-photo">
+                    <i class="material-icons">photo</i>
+                  </button>
+                  <a class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" href="/de<%=url.main.blog+url.blog.write%>" id="opt-write">
+                    <i class="material-icons">add</i>
+                  </a>
+                <%}%>
+            </div>
+          </div>
+          <div class="articles-grid">
+            <% if (isUser && author) {%>
+            <h3 class="mainText">Deine Artikel:</h3>
+            <% }else{%>
+            <h3 class="mainText"><%= author.username %>s Artikel:</h3>
+            <%}%>
+            <% if (author.articles.length==0 || (!isUser && author.articles.filter(article => article.public).length==0)) {%>
+            <% if (isUser && author) {%>
+            <h5>Es scheint als ob du noch nichts verfasst hast. Schreib was dir durch den Kopf geht!</h5>
+            <div class="nextStepWrapper"><a href="/de<%=url.main.blog+url.blog.write%>" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored nextStep">
+              <i class="material-icons">arrow_forward</i>
+            </a></div>
+            <% }else{%>
+            <h5 class="subText">Dieser Blogger hat noch nichts veröffentlicht...</h5>
+            <%}} %>
+            <div class="mdl-grid articles" id="max-articles">
+              <% author.articles.forEach(function(article) { if (article.public||isUser) { %>
+                <div class="mdl-cell mdl-cell--4-col demo-card-wide mdl-card mdl-shadow--2dp" >
+                  <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                                                      url(<%=url.main.blog+url.blog.pictures%>?picID=<%=article.articlePicID%>)
+                                                      center/cover no-repeat;">
+                    <h2 class="mdl-card__title-text"><%=article.title%></h2>
+                  </div>
+                  <div class="mdl-card__supporting-text">
+                    <% if (article.subtitle.lastIndexOf(" ")!=-1 && article.subtitle.length>=200) { %>
+                      <%= article.subtitle.substring(0, Math.min(400, article.subtitle.substring(0, 400).lastIndexOf(" ")))%>...
+                    <% }else{ %>
+                      <%= article.subtitle.substring(0, 400) %>
+                    <% }%>
+                  </div>
+                  <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de<%=url.main.blog+url.blog.articles%>?article=<%=article._id%>">
+                      Artikel lesen
+                    </a>
+                    <%if (isUser && author) {%><a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" href="/de<%=url.main.blog+url.blog.write%>?article=<%=article._id%>">
+                      Artikel bearbeiten
+                    </a><%}%>
+                    <p class="article-views">Aufrufe: <%=article.visitors%></p>
+                  </div>
+                  <div class="mdl-card__menu tags">
+                  <% article.tags.forEach(function(tag) { %>
+                    <span class="mdl-chip">
+                      <span class="mdl-chip__text"><%= tag %></span>
+                    </span>
+                  <%})%>
+                  </div>
+                </div>
+              <%}})%>
+            </div>
+          </div>
+        </div>
+          
+        <%if (isUser && author) {%>
+        
+        <button id="editButton" class="mdl-button mdl-js-button mdl-button--raised dialog" type="button">Show Snackbar</button>
+        <div id="editToast" class="mdl-js-snackbar mdl-snackbar">
+          <div class="mdl-snackbar__text"></div>
+          <button class="mdl-snackbar__action" type="button"></button>
+        </div>
+
+        <div class="centered">
+          <div class="mdl-dialog dialog" id="dialog">
+            <div style="float: right;">
+              <button type="button" class="mdl-button" id="dialog_close-edit" onclick="closeEditorMode()"><i class="material-icons">close</i></button>
+            </div>
+            <h4 class="mdl-dialog__title">Bearbeite dien Profil!</h4>
+            <div class="mdl-dialog__content">
+              <form action="/de<%=url.main.blog%><%=url.blog.profile%>?user=<%=author._id%>" method="post">
+                <div class="mdl-grid">
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <h5 class="subText">Verändere deine Infos.</h5>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <input class="mdl-textfield__input" type="text" id="firstname" name="firstname" value="<%= author.firstname %>" maxlength="30">
+                      <label class="mdl-textfield__label" for="firstname">Vorname</label>
+                      <span class="mdl-textfield__error hidden" id="firstname_err">Vorname darf nicht länger als 30 Buchstaben sein!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <input class="mdl-textfield__input" type="text" id="lastname" name="lastname" value="<%= author.lastname %>" maxlength="30">
+                      <label class="mdl-textfield__label" for="lastname">Nachname</label>
+                      <span class="mdl-textfield__error hidden" id="lastname_err">Nachname darf nicht länger als 30 Buchstaben sein!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <textarea class="mdl-textfield__input" type="text" rows= "5" id="about" name="about" onkeyup="checkAboutLen()" maxlength="256"><%= author.about %></textarea>
+                      <label class="mdl-textfield__label" for="about">Über dich</label>
+                      <span class="mdl-textfield__error hidden" id="about_err">Über dich darf nicht länger als 256 Buchstaben sein!</span>
+                    </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <h5 class="subText">Verändere dein Passwort. Zum löschen musst dein jetziges Passwort eingeben.</h5>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <input class="mdl-textfield__input" type="password" id="password_old" name="password_old" onkeyup="checkOldPassword()">
+                      <label class="mdl-textfield__label" for="password_old">Jetziges Passwort</label>
+                      <span class="mdl-textfield__error hidden" id="password_old_err">Passwort falsch!</span>
+                      <span class="mdl-textfield__error hidden" id="password_old_check">Prüfe Passwort!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <input class="mdl-textfield__input" type="password" id="password" name="password" onkeyup="checkPassword()">
+                      <label class="mdl-textfield__label" for="password">Neues Passwort</label>
+                      <span class="mdl-textfield__error hidden" id="password_check">Neues Passwort muss mindestens 4 Buchstaben lang sein!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+                      <input class="mdl-textfield__input" type="password" id="password_confirm" name="password_confirm" onkeyup="checkPassword()">
+                      <label class="mdl-textfield__label" for="password_confirm">Bestätige neues Passwort</label>
+                      <span class="mdl-textfield__error hidden" id="password_err">Passwörter stimmen nicht überein!</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="hidden" id="edit_hidden"></button>
+              </form>
+            </div>
+            <div class="mdl-dialog__actions">
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="clickEdit()" id="edit">Speichern</button>
+              <button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="openSure()" id="del">Account löschen</button>
+            </div>
+          </div>
+          
+          <div class="mdl-dialog dialog" id="pic-dialog">
+            <div style="float: right;">
+              <button type="button" class="mdl-button" id="dialog_close-img" onclick="closePictureMode()"><i class="material-icons">close</i></button>
+            </div>
+            <h4 class="mdl-dialog__title">Set your Profile Photo</h4>
+            <h5 class="mdl-dialog__title subText" style="padding-top: 5px;">Auf manchen Seiten ist das Profilbild abgeschnitten.</h5>
+            <div class="mdl-dialog__content">
+              <div class="upload-img-wrap">
+                <div id="upload-img"></div>
+              </div>
+              <input type="file" id="upload" value="Choose a file" accept="image/*" />
+            </div>
+            <div class="mdl-dialog__actions">
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="clickSave()" id="save">Speicher Bild</button>
+              <button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="clickSelect()" id="save">Auswählen</button>
+            </div>
+          </div>
+
+          <div class="mdl-dialog dialog" id="sure-dialog">
+            <h4 class="mdl-dialog__title">Sicher?</h4>
+            <div class="mdl-dialog__content">
+              <p>Dies kann nicht rückgängig gemacht werden.</p>
+            </div>
+            <div class="mdl-dialog__actions">
+              <a type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" href="/de<%=url.main.blog+url.blog.delprofile%>">Ja</a>
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="closeSure()">Nein</button>
+            </div>
+          </div>
+        </div>
+        
+        <div id="dialog-bg" class="dialog-bg hiddenDisplay" onclick="closeEditorMode()"></div>
+        <div id="pic-dialog-bg" class="dialog-bg hiddenDisplay" onclick="closePictureMode()"></div>
+        <div id="sure-dialog-bg" class="dialog-bg hiddenDisplay" onclick="closeSure()"></div>
+
+        <div class="mdl-tooltip mdl-tooltip--large" for="opt-edit">Profil bearbeiten</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="opt-photo">Profilbild ändern</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="opt-write">Schreibe einen neuen Artikel</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="dialog_close-edit">Schließen</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="dialog_close-img">Schließen</div>
+
+        <script src="/js_css/croppie.min.js"></script>
+        <script>
+          // Get Authordata for JS use
+          var author = <%-JSON.stringify(author)%>;
+
+          // Get all important HTML Elements
+          var Content = $('#content')[0]
+          var Dialog = $('#dialog')[0]
+          var PicDialog = $('#pic-dialog')[0]
+          var SureDialog = $('#sure-dialog')[0]
+          
+          var DialogBG = $('#dialog-bg')
+          var PicDialogBG = $('#pic-dialog-bg')
+          var SureDialogBG = $('#sure-dialog-bg')
+          var Page = $('.page-content')
+                                  
+          var PasswordOldInput = $('#password_old')[0]
+          var PasswordInput = $('#password')[0]
+          var ConfirmInput = $('#password_confirm')[0]
+          var AboutInput = $('#about')[0]
+          
+          var EditButton = $('#edit')[0]
+          var DelButton = $('#del')[0]
+          var EditHiddenButton = $('#edit_hidden')[0]
+
+          var PasswordCheck = $('#password_check')[0]
+          var PasswordOldCheck = $('#password_old_check')[0]
+          var PasswordErr = $('#password_err')[0]
+          var PasswordOldErr = $('#password_old_err')[0]
+
+          var AboutLen = $('#about_len')[0]
+
+          // Set Verification Valid and Counter
+          var passwordValid = true
+          var passwordOldValid = false
+          var aboutLenValid = true
+          var passwordCheckCounter = 0
+
+          // On Load
+          EditButton.disabled = true
+          DelButton.disabled = true
+
+          // Picture Mode ==========================================================================================================================================
+          function pictureMode(){
+            PicDialog.style.transform = "translate(0px, 0px)"
+            PicDialogBG.removeClass('hiddenDisplay')
+            setTimeout(function() {
+              PicDialogBG[0].style.opacity=0.8
+              Page.addClass('blurred')
+            }, 20)
+
+          }
+          function closePictureMode(){
+            PicDialog.style.transform = "translate(0px, -1056px)"
+            PicDialogBG[0].style.opacity=0
+            Page.removeClass('blurred')
+            PicDialogBG.one('transitionend', function(e) {
+              PicDialogBG.addClass('hiddenDisplay')
+            })
+          }
+
+          // Croppie
+          function clickSelect(){
+            $('#upload')[0].click()
+          }
+          function clickSave(){
+            $uploadCrop.croppie('result', {
+              type: 'canvas',
+              size: {width: 512, height: 512}
+            }).then(function (resp) {
+              socket.emit("uploadImage" , {src: resp, uniqueID: author.profilePicID, typeCode: "profilecode-"})
+            });
+          }
+          
+          uniqueID = author.profilePicID
+          binded = false
+          $('#upload-img').click(function() {
+            if (!binded) {
+              clickSelect()
+            }
+          })
+
+          socket.on("uniqueCode", function(data) {
+            uniqueID = data.code
+          })
+          
+          socket.on("picSaved", function(data) {
+            snackbarContainer.MaterialSnackbar.showSnackbar({message: data.messageEN})
+            socket.emit("updateAuthorImage", {id: author._id, uniqueID: uniqueID})
+            location.reload(true)
+          })
+          
+          var picImgInput
+          function readFile(input) {
+            picImgInput = input
+            if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                $('.upload-img-wrap').addClass('ready')
+                $uploadCrop.croppie('bind', {
+                  url: e.target.result
+                }).then(function(){
+                  binded = true
+                })
+
+              }
+              reader.readAsDataURL(input.files[0]);
+            }
+          }
+
+          var lastWindowWidth = $(document).width()
+          var lastWindowHeight = $( document ).height()
+          window.onresize = function(){
+            if ((lastWindowWidth <= 768 && $(document).width() > 768) ||
+                (lastWindowWidth > 768 && $(document).width() <= 768) ||
+                (lastWindowHeight <= 736 && $(document).height() > 736) ||
+                (lastWindowHeight > 736 && $(document).height() <= 736)) {
+              var size = 512,
+                bound = 88,
+                zoom = 1
+              if ($(document).width()<=768 || $( document ).height()<=736) {
+                size = 256
+                bound = 44
+                zoom = 0.5
+              }
+              $uploadCrop.croppie('destroy', {})
+              $('.upload-img-wrap').removeClass('ready');
+              $("#upload-img").html("");
+              $uploadCrop=null;
+
+              $uploadCrop = $('#upload-img').croppie({
+                viewport: {
+                  width: size,
+                  height: size,
+                  type: 'square'
+                },
+                boundary: {width: (size+bound), height: (size+(0.2*bound))}
+              });
+              if (binded) {
+                readFile(picImgInput)
+              }else{
+                $uploadCrop.croppie('bind', {
+                  url: "/pics/Standard/standard-avatar.png",
+                  points: [0,0, size, size]
+                }).then(function() {
+                  $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+                  $uploadCrop.croppie('setZoom', zoom)
+                })
+              }
+            }
+            lastWindowWidth = $(document).width()
+            lastWindowHeight = $( document ).height()
+          }
+
+          var size = 512,
+            bound = 88,
+            zoom = 1
+          if ($(document).width()<=768 || $( document ).height()<=736) {
+            size = 256
+            bound = 44
+            zoom = 0.5
+          }
+          var $uploadCrop = $('#upload-img').croppie({
+            viewport: {
+              width: size,
+              height: size,
+              type: 'square'
+            },
+            boundary: {width: (size+bound), height: (size+bound)}
+          });
+          $uploadCrop.croppie('bind', {
+            url: "/pics/Standard/standard-avatar.png",
+            points: [0,0, size, size]
+          }).then(function() {
+            $('.cr-slider').attr({'min':0.1, 'max':1.5000})
+            $uploadCrop.croppie('setZoom', zoom)
+          })
+          
+          $('#upload').on('change', function () { readFile(this); });
+
+
+          // Verify Password =================================================================================================================
+          function checkPassword() {
+            if (PasswordInput.value.length>=4) {
+              PasswordCheck.style.visibility = "hidden"
+              if (PasswordInput.value==ConfirmInput.value) {
+                PasswordErr.style.visibility = "hidden"
+                passwordValid = true
+              }else {
+                PasswordErr.style.visibility = "visible"
+                passwordValid = false
+              }
+            }else{
+              PasswordCheck.style.visibility = "visible"
+              passwordValid = false
+            }
+            validatePassword()
+          }
+
+          // Verify Old Password
+          var lastPassword
+          function checkOldPassword() {
+            lastPassword = Date.now()
+            setTimeout(function() {
+              if ((Date.now()-lastPassword)>499) {
+                passwordCheckCounter++
+                passwordOldValid = false
+                PasswordOldCheck.style.visibility = "visible"
+                PasswordOldErr.style.visibility = "hidden"
+                socket.emit("profileRequestPasswordValidation" , {
+                  username: '<%=author.username%>',
+                  password: PasswordOldInput.value
+                })
+              }
+            }, 500)
+          }
+
+          // Verify About Len
+          function checkAboutLen() {
+            if (AboutInput.value.length>=256) {
+              AboutLen.style.visibility = "visible"
+              aboutLenValid = false
+            }else{
+              AboutLen.style.visibility = "hidden"
+              aboutLenValid = true
+            }
+            validatePassword()
+          }
+
+          socket.on("profileResponsePasswordValidation", function (data) {
+            passwordCheckCounter--
+            if (passwordCheckCounter==0) {
+              PasswordOldCheck.style.visibility = "hidden"
+              if (data.valid) {
+                PasswordOldErr.style.visibility = "hidden"
+                passwordOldValid = true
+              }else{
+                PasswordOldErr.style.visibility = "visible"
+                passwordOldValid = false
+              }
+              validatePassword()
+            }
+          })
+
+          // Change Password Status
+          function validatePassword() {
+            if (((passwordValid&&passwordOldValid)||(PasswordOldInput.value.length==0&&PasswordInput.value.length==0))&&aboutLenValid) {
+              EditButton.disabled = false
+            }else {
+              EditButton.disabled = true
+            }
+            if (passwordOldValid) {
+              DelButton.disabled = false
+            }else{
+              DelButton.disabled = true
+            }
+          }
+          validatePassword()
+          
+          // Click hidden Button to activate the Form ===========================================================================
+          function clickEdit(){
+            EditHiddenButton.click()
+          }
+
+          // Editor Mode
+          function editorMode(){
+            Dialog.style.transform = "translate(0px, 0px)"
+            DialogBG.removeClass('hiddenDisplay')
+            setTimeout(function() {
+              DialogBG[0].style.opacity=0.8
+              Page.addClass('blurred')
+            }, 20)
+          }
+          function closeEditorMode(){
+            Dialog.style.transform = "translate(0px, -1056px)"
+            DialogBG[0].style.opacity=0
+            Page.removeClass('blurred')
+            DialogBG.one('transitionend', function(e) {
+              DialogBG.addClass('hiddenDisplay')
+            })
+          }
+
+          function openSure(){
+            SureDialog.style.transform = "translate(0px, 0px)"
+            SureDialogBG.removeClass('hiddenDisplay')
+            setTimeout(function() {
+              SureDialogBG[0].style.opacity=0.8
+              Page.addClass('blurred')
+            }, 20)
+          }
+          function closeSure(){
+            SureDialog.style.transform = "translate(0px, -1056px)"
+            SureDialogBG[0].style.opacity=0
+            Page.removeClass('blurred')
+            SureDialogBG.one('transitionend', function(e) {
+              SureDialogBG.addClass('hiddenDisplay')
+            })
+          }
+          
+          var edit = '<%=edit%>';
+          var snackbarContainer = $('#editToast')[0];
+          var showToastButton = $('#editButton')[0];
+          
+          // Successfull Edit
+          (function() {
+          'use strict';
+          showToastButton.addEventListener('click', function() {
+            'use strict'
+            if (edit=='true') {
+              var data = {message: 'Bearbeiten erfolgreich!'}
+            }else if(edit=='false') {
+              var data = {message: 'Irgendetwas lief schief...'}
+            }
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+          }());
+          
+          function onload() {
+            if (edit=='true' || edit=='false') {
+              setTimeout(function () {
+                showToastButton.click()
+              }, 500)
+            }
+          }
+        </script>
+        <%}%>
+      </main>
+      <%- include ../footer %>
+    </div>
+  </body>
+</html>

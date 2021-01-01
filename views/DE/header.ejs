@@ -1,0 +1,40 @@
+<header class="mdl-layout__header">
+  <div class="mdl-layout__header-row">
+    <!-- Title -->
+    <a class="mdl-navigation__link" href="/de<%=url.main.route%>">
+      <span class="mdl-layout-title titlename"><img class="title-t" src="/pics/favicon.png" alt="T">obias Hölzer</span>
+    </a>
+    <!-- Add spacer, to align navigation to the right -->
+    <div class="mdl-layout-spacer"></div>
+    <!-- Navigation. We hide it in small screens. -->
+    <nav class="mdl-navigation mdl-layout--large-screen-only">
+      <a class="mdl-navigation__link" href="/de<%=url.main.route%>"><i class="material-icons">home</i></a>
+      <a class="mdl-navigation__link" href="/de<%=url.main.aboutme%>">Über mich</a>
+      <a class="mdl-navigation__link" href="/de<%=url.main.work%>">Leistung</a>
+      <a class="mdl-navigation__link" href="/de<%=url.main.blog%>">Blog</a>
+      <a class="mdl-navigation__link" href="/de<%=url.main.references%>">Kontakt</a>
+    </nav>
+  </div>
+</header>
+<div class="mdl-layout__drawer">
+  <span class="mdl-layout-title titlename">Tobias Hölzer</span>
+  <nav class="mdl-navigation">
+    <a class="mdl-navigation__link" href="/de<%=url.main.route%>"><i class="material-icons">home</i></a>
+    <a class="mdl-navigation__link" href="/de<%=url.main.aboutme%>">Über mich</a>
+    <a class="mdl-navigation__link" href="/de<%=url.main.work%>">Leistung</a>
+    <a class="mdl-navigation__link" href="/de<%=url.main.blog%>">Blog</a>
+    <a class="mdl-navigation__link" href="/de<%=url.main.references%>">Kontakt</a>
+    <hr>
+    <a class="mdl-navigation__link" href="<%=url.main.lang+'?path=/'+originalUrl.split('/').slice(2).join('/')%>">
+      <img class="lang-nav-img" src="/pics/germany.png" alt="Deutsch">
+      <img class="lang-nav-img" src="/pics/united-kingdom.png" alt="English">
+    </a>
+  </nav>
+</div>
+<div id="loader-wrapper">
+    <img id="loader" src="/pics/favicon.png">
+
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+
+</div>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Tobias Hölzer - Homepage'}) %>
+  <style>
+    #scene{
+      text-align:center;
+      position: relative;
+    }
+    #first-para{
+      left:0px !important;
+      top: 0px !important;
+    }
+    #first-para-pic{
+      width: 512px;
+      height: auto;
+    }
+    #second-para{
+      font-size: calc(24px + 3vw);
+      color: #fff;
+      position: fixed;
+      top: 500px !important;
+      left: calc(20% - 20px) !important;
+      line-height: 5vw;
+    }
+    #text-wrapper{
+      text-align: center;
+      width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 98%;
+    }
+    #text{
+      color: white;
+      background: #000;
+      font-size: 36px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      padding: 12px;
+      line-height: 48px;
+    }
+    #links{
+      background: #000;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 100px;
+      margin-top: 500px;
+    }
+    #projects{
+      background: white;
+      text-align: center;
+      padding-top: 47px;
+      padding-bottom: 77px;
+    }
+    .none{
+      opacity: 0;
+    }
+    .none:hover{
+      cursor: default;
+    }
+    .btn-none,
+    .btn-none:hover{
+      border: none;
+      background: none;
+      color: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 1%;
+    }
+    .center{
+      text-align: center;
+    }
+    .anchor-link{
+      font-size: 48px;
+      line-height: 64px;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+      color: white;
+    }
+    h1,
+    h2,
+    h3{
+      font-variant: small-caps;
+    }
+    br{
+      display: block;
+      margin-bottom: 16px;
+    }
+
+
+    /* Project Cards */
+    .project-card{
+      -webkit-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+      -moz-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+      box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.5);
+
+      max-width: 500px;
+      min-height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+
+      padding: 10px;
+    }
+
+    #pw-list{
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #pw-output{
+      margin-bottom: 5%;
+    }
+
+    .icon-big{
+      max-width: 64px;
+      width: 64px;
+      height: 64px;
+      font-size: 48px;
+    }
+    .icon-big i{
+      font-size: 48px;
+      -webkit-transform: translate(-24px, -24px) !important;
+      transform: translate(-24px, -24px) !important;
+      width: 48px !important;
+      line-height: 48px !important;
+    }
+  </style>
+  <script src="/js_css/parallax.min.js"></script>
+  <script src="/js_css/plotly.js"></script>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+      <%- include header %>
+      <main class="mdl-layout__content">
+        <div class="page-content">
+          <div id="links">
+            <a class="anchor-link anchor-border" href="/dash<%=url.myshit.passwordgen%>">password</a>
+            <a class="anchor-link" href="/dash<%=url.myshit.feelings%>">feelings</a>
+          </div>
+          <div id="projects">
+            <h1 class="center">My current Projects</h1>
+            
+          <div class="hidden" id="userid"><%= userid %></div>
+
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--4-col">
+                <div class="project-card" id="password-gen">
+                  <a href="/dash<%=url.myshit.passwordgen%>" style="color: rgba(0,0,0,.87); text-decoration: none;"><h2 id="pw-output">Passwords</h2></a>
+
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="search-pw" onchange="requestPW()" onkeyup="requestPW()">
+                    <label class="mdl-textfield__label" for="search-pw">Suchen</label>
+                  </div>
+                  <div class="demo-list-action mdl-list" id="pw-list">
+
+                  </div>
+                  <script src="/js_css/password-gen.js"></script>
+                  <script>
+                  
+                    let pwGen = new passwordGenerator()
+                    let pwInfos = {}
+
+                    let pwOut = $('#pw-output')[0]
+                    function loadPW(id) {
+                      pwOut.innerHTML = "Password"
+                      if (pwInfos[id]) {
+                        pwGen.setValues(pwInfos[id])
+                        if (pwInfos[id].mode) {
+                          pwGen.superSecure()
+                        }else{
+                          pwGen.secure()
+                        }
+                        if (pwGen.password!="" && pwGen.password!="undefined") {
+                          pwOut.innerHTML = pwGen.password
+                        }
+                      }
+                    }
+
+                    let pwList = $('#pw-list')[0]
+                    function loadPWToTable() {
+                      pwList.innerHTML = ``
+                      for (let key in pwInfos) {
+                        pwInfo = pwInfos[key]
+                        pwList.innerHTML += `
+                          <div class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">
+                              <i class="material-icons mdl-list__item-icon">https</i>
+                              <span>${pwInfo.comp}</span>
+                            </span>
+                            <span class="mdl-list__item-secondary-action">
+                              <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" onclick="loadPW('${key}')">
+                                <i class="material-icons">keyboard_arrow_right</i>
+                              </button>
+                            </span>
+                          </div>`
+                      }
+                    }
+
+                    let searchInp = $('#search-pw')[0]
+                    function requestPW() {
+                      pwOut.innerHTML = "Passwords"
+                      if (!searchInp.value == "") {
+                        pwInfos = {}
+                        socket.emit("passwordRequestSearch" , {search: searchInp.value})
+                      }else{
+                        pwList.innerHTML = ``
+                      }
+                    }
+
+                    socket.on("passwordResponseSearch", function(data) {
+                      pwInfos = data
+                      loadPWToTable()
+                    })
+
+                  </script>
+                </div>
+              </div>
+              <div class="mdl-cell mdl-cell--4-col">
+
+                <div class="project-card">
+                  <a href="/dash<%=url.myshit.feelings%>" style="color: rgba(0,0,0,.87); text-decoration: none;"><h2>Feelings</h2></a>
+                  <div>
+                    <button class="mdl-button mdl-js-button mdl-button--icon icon-big" onclick="regFeeling(0)">
+                      <i class="material-icons">mood_bad</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon icon-big" onclick="regFeeling(1)">
+                      <i class="material-icons">sentiment_very_dissatisfied</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon icon-big" onclick="regFeeling(2)">
+                      <i class="material-icons">sentiment_dissatisfied</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon icon-big" onclick="regFeeling(3)">
+                      <i class="material-icons">sentiment_satisfied</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon icon-big" onclick="regFeeling(4)">
+                      <i class="material-icons">mood</i>
+                    </button>
+                  </div>
+                  <div id="feeling-chart"></div>
+                </div>
+                <script>
+                  
+                  let colors = {
+                    'Great': '#009933',
+                    'Good': '#99ff33',
+                    'Neutral': '#ffff66',
+                    'Bad': '#ff9933',
+                    'Very bad': '#ff3300'
+                  }
+                  function renderFeelingsChart(values) {
+                    let sortable = [];
+                    for (let val in values) {
+                      sortable.push({
+                        feeling: val,
+                        c: values[val],
+                        color: colors[val]
+                      })
+                    }
+                    sortable.sort(function(a, b) {
+                        return b.c - a.c;
+                    });
+
+                    let dataValues = sortable.map((item) => {
+                      return item.c
+                    })
+                    let dataLabels = sortable.map((item) => {
+                      return item.feeling
+                    })
+                    let dataColors = sortable.map((item) => {
+                      return item.color
+                    })
+                    var data = [{
+                      values: dataValues,
+                      labels: dataLabels,
+                      type: 'pie'
+                    }];
+
+                    var layout = {
+                      colorway : dataColors
+                    };
+
+                    var config = {
+                      displayModeBar: false,
+                      responsive: true
+                    }
+
+                    Plotly.newPlot('feeling-chart', data, layout, config);
+                  }
+                  function regFeeling(feeling) {
+                    socket.emit("registerFeeling", {
+                      feeling: parseInt(feeling),
+                      userid: $('#userid')[0].innerHTML
+                    })
+                  }
+
+                  socket.on("savedFeeling", (success) => {
+                    if (success) {
+                      socket.emit("requestCountFeelings", {
+                        userid: $('#userid')[0].innerHTML
+                      })
+                    }
+                  })
+
+                  socket.emit("requestCountFeelings", {
+                    userid: $('#userid')[0].innerHTML
+                  })
+
+                  socket.on("responseCountFeelings", (data) => {
+                    renderFeelingsChart(data)
+                  })
+                </script>
+
+              </div>
+            </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+  </body>
+</html>

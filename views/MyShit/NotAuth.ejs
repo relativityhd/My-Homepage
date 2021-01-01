@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Wrong Page - Tobias Hölzer', webcontent: 'You should not be here...'}) %>
+  <style>
+    .center{
+      text-align: center;
+    }
+  </style>
+  <body>
+    <%- include ../loader %>
+    <script>
+      window.onbeforeunload = undefined
+    </script>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <h1 class="title center">Nicht Autorisiert! / Not Authorised!</h1>
+          <h3 class="center">Bitte verlasse die Seite. Es geht hier für dich nicht weiter.</h3>
+          <h3 class="center">Please leave the Site here. There is no path for you here.</h3>
+          <a class="center" href="<%= url.main.route %>">Home</a>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+  </body>
+</html>

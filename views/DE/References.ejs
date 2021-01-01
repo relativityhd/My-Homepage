@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Impressum - Tobias Hölzer', 
+  webcontent: 'Kontakt, Impressum und über Rechte und sowas. Kontakt - Tobias Hölzer, Email: tobiashoelzer@hotmail.com, Mobil: 0179 7211 240'}) %>
+  <style>
+    #refs{
+      margin-top: 100px;
+      margin-bottom: 100px;
+    }
+    #contact-info-table{
+      text-align: left;
+    }
+    #npm-modules li{
+      font-size: 16px;
+      line-height: 18px;
+    }
+    .large-info {
+      display: block;
+    }
+    .small-info {
+      display: none;
+    }
+    @media screen and (max-width: 600px) {
+      .large-info {
+        display: none;
+      }
+      .small-info {
+        display: block;
+      }
+    }
+    .info-head{
+      margin-bottom: 2px;
+      font-size: 20px;
+    }
+    .info-info{
+      margin-top: 2px;
+      font-size: 20px;
+    }
+    .info-advert{
+      max-width: 90%;
+    }
+    .none{
+      opacity: 0;
+    }
+    .none:hover{
+      cursor: default;
+    }
+    .btn-none,
+    .btn-none:hover{
+      border: none;
+      background: none;
+      color: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 1%;
+    }
+    .sn-icon{
+      width: 64px;
+      height: auto;
+    }
+    .sn-link{
+      text-decoration: none;
+      margin: 1%;
+    }
+    .page-content{
+      width: 97%;
+      max-width: 1024px;
+      margin-top: 3%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .table-h6{
+      margin:0;
+    }
+    .data{
+      margin-left: 20%;
+    }
+    .center{
+      text-align: center;
+    }
+    .list{
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .text{
+      text-align: justify;
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .padding{
+      padding-left: 1%;
+      padding-right: 1%;
+    }
+    h6{
+      font-size: 24px;
+    }
+    br{
+      display: block;
+      margin-bottom: 16px;
+    }
+  </style>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <h1>Kontakt</h1>
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--8-col" id="contact-info">
+              <h6>Tobias Hölzer</h6>
+              <h6>Badensche Str. 7</h6>
+              <h6>10825 Berlin</h6>
+              <br>
+              <div class="large-info">
+                <table id="contact-info-table">
+                  <tr>
+                    <th><h6 class="table-h6">Mobil:</h6></th>
+                    <th><h6 class="table-h6 data">0179 7211 240</h6></th>
+                  </tr>
+                  <tr>
+                    <th><h6 class="table-h6">Email:</h6></th>
+                    <th><h6 class="table-h6 data">tobiashoelzer@hotmail.com</h6></th>
+                  </tr>
+                </table>
+              </div>
+              <div class="small-info">
+                <h6 class="info-head">Phone:</h6>
+                <h6 class="info-info">0179 7211 240</h6>
+                <h6 class="info-head">Email:</h6>
+                <h6 class="info-info">tobiashoelzer@hotmail.com</h6>
+              </div>
+              <hr>
+              <h6 class="info-advert">Du kannst mich gerne jederzeit kontaktieren. Dies sind meine Social Media Accounts. Am aktivisten bin ich auf WhatsApp, Instagram und Discord</h6>
+            </div>
+            <div class="mdl-cell mdl-cell--4-col" id="social-networks">
+              <a class="sn-link" href="https://www.instagram.com/tobi.t.hoelzer/" target="_blank">
+                <img class="sn-icon" src="/pics/SN-Icons/instagram.png" alt="Instagram">
+              </a>
+              <a class="sn-link" href="https://www.linkedin.com/in/tobias-h%C3%B6lzer-281b72193/" target="_blank">
+                <img class="sn-icon" src="/pics/SN-Icons/linkedin.png" alt="LinkedIn">
+              </a>
+              <a class="sn-link" href="https://twitter.com/tobiashoelzer" target="_blank">
+                <img class="sn-icon" src="/pics/SN-Icons/twitter.png">
+              </a>
+              <button id="discord-show-snackbar" class="btn-none" type="button">
+                <img class="sn-icon" src="/pics/SN-Icons/discord.png">
+              </button>
+              <button id="skype-show-snackbar" class="btn-none" type="button">
+                <img class="sn-icon" src="/pics/SN-Icons/skype.png">
+              </button>
+              <button id="whatsapp-show-snackbar" class="btn-none" type="button">
+                <img class="sn-icon" src="/pics/SN-Icons/whatsapp.png">
+              </button><br>
+              
+              <div id="discord-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action" type="button"></button>
+              </div>
+              <div id="skype-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action" type="button"></button>
+              </div>
+              <div id="whatsapp-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action" type="button"></button>
+              </div>
+              <input class="none" id="input-discord" type="text" value="Relativity#1526"/>
+              <input class="none" id="input-skype" type="text" value="freakitdowwn"/>
+              <input class="none" id="input-whatsapp" type="text" value="0179 7211240"/>
+            </div>
+          </div>
+          <script>
+            function init (name, value) {
+              'use strict';
+              var snackbarContainer = document.querySelector('#'+name+'-snackbar-example');
+              var showSnackbarButton = document.querySelector('#'+name+'-show-snackbar');
+              var handler = function(event) {
+                var copyText = document.querySelector("#input-"+name);
+                copyText.select();
+                document.execCommand("copy");
+              }
+              showSnackbarButton.addEventListener('click', function() {
+                'use strict';
+                var data = {
+                  message: value,
+                  timeout: 5000,
+                  actionHandler: handler,
+                  actionText: 'Kopieren'
+                }
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+              })
+            }
+
+            var SNs = [{name: "discord", value: "Relativity#1526"}, {name: "skype", value: "freaktitdowwn"}, {name: "whatsapp", value: "0179 7211240"}]
+            SNs.forEach(function(sn) {
+              init(sn.name, sn.value)
+            })
+          </script>
+          <hr>
+          <div id="refs">
+            <h1>Impressum</h1>
+            <h3 class="padding">Was ich für meine Website benutze</h3>
+            <div class="padding mdl-grid">
+              <div class="mdl-cell mdl-cell--6-col">
+                <h6>Skripte von anderen Personen:</h6>
+                <ul class="list">
+                  <li>Design: <a href="https://getmdl.io/" target="_blank">material design lite</a></li>
+                  <li>Parallax: <a href="https://www.jqueryscript.net/animation/Creating-3D-Interative-Parallax-Background-Effects-with-jQuery-Simples-3D.html" target="_blank">simples-3d parallax effect</a></li>
+                  <li>Script: <a href="https://jquery.com/" target="_blank">jQuery</a></li>
+                  <li>Icons: <a href="https://www.flaticon.com/" target="_blank">flaticon</a></li>
+                  <li>Bilder zuschneiden: <a href="https://foliotek.github.io/Croppie/" target="_blank">croppie</a></li>
+                  <li>Blog Style: <a href="https://quilljs.com/" target="_blank">quill js</a></li>
+                  <li>Blog Bilder: <a href="https://www.npmjs.com/package/quill-image-resize" target="_blank">quill image resize</a></li>
+                  <li>Code Style: <a href="https://highlightjs.org/" target="_blank">highlight js</a></li>
+                  <li>Zeit formatieren: <a href="https://momentjs.com/" target="_blank">moment js</a></li>
+                  <li>Design Passwort Generator: <a href="https://materializecss.com/" target="_blank">materialize</a></li>
+                  <li>Graphen: <a href="https://plot.ly/">plotly</a></li>
+                </ul>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col">
+                <h6>NPM Modules:</h6>
+                <ul class="list" id="npm-modules">
+                    <li>"async": "^2.6.1",</li>
+                    <li>"bcryptjs": "^2.4.3",</li>
+                    <li>"body-parser": "^1.18.3",</li>
+                    <li>"clear": "^0.1.0",</li>
+                    <li>"colors": "^1.3.0",</li>
+                    <li>"concurrently": "^4.0.0",</li>
+                    <li>"ejs": "^2.6.1",</li>
+                    <li>"express": "^4.16.3",</li>
+                    <li>"express-session": "^1.15.6",</li>
+                    <li>"express-validator": "^5.2.0",</li>
+                    <li>"gridfs-stream": "^1.1.1",</li>
+                    <li>"material-design-lite": "^1.3.0",</li>
+                    <li>"mongodb": "^3.1.13",</li>
+                    <li>"mongoose": "^5.4.17",</li>
+                    <li>"nodemon": "^1.17.5",</li>
+                    <li>"npm": "^6.0.1",</li>
+                    <li>"passport": "^0.4.0",</li>
+                    <li>"passport-local": "^1.0.0",</li>
+                    <li>"quill-image-drop-module": "^1.0.3",</li>
+                    <li>"quill-image-resize-module": "^3.0.0",</li>
+                    <li>"socket.io": "^2.1.1",</li>
+                    <li>"uniqid": "^5.0.3"</li>
+                </ul>
+              </div>
+            </div>
+            <h3 class="padding">Über Rechte und so</h3>
+            <p class="padding text">Diese Website wird von der <a href="https://cloud.ibm.com" target="_blank">IBM Cloud</a> gehostet. Meine Datenbank ist die 
+              <a href="https://www.mongodb.com/" target="_blank">MongoDB Storage-Cloud</a>.
+              <br>Alle Downlaods sind keine Sicherheitsrisken für deinen PC! Die Quelle aller herunterladbaren Programmen, 
+              Bilder etc. bin ich. Du kann alle meine Programme und Bilder frei Nutzen, außer Mello. Meine Zeugnisse usw. sind natürlich nur zum anschauen.
+              <br>
+              Alle Bilder auf dieser Website sind entweder von mir oder common use. Meine Bilder habe ich mit Franja Eden aufgenommen. Hier ist Ihre Website, 
+              schaut sie euch mal an:
+                <a href="http://www.franjaeden.de/" target="_blank">http://www.franjaeden.de/</a>
+              <br>
+              Die Links oben und die Links zu meinen Profilen auf Sozialen Netzwerken sind die einzigen, die von meiner Seite wegführen. Für diese Seiten trage 
+              ich keinerlei Verantwortung.
+              <br>
+              Für meinem Blog sammel ich die folgenden Benutzerdaten: Benutzername, Anmeldedatum und Sprache. Das Benutzerpasswort wird gehasht in meiner 
+              Datenbank gespeichert. Der Benutzer kann mir freiwillig folgende Daten mitteilen: Vorname, Nachname, 'Über', ein Profilbild und seine Artikel. 
+              Diese Artikel beinhalten folgende Daten: Titel, Alternativtitel, Stichworte, Schreibdatum, der geschriebene Artikel und ein Artikelbild.
+              <br>
+              Ich übernehme keine Verantwortung für die Artikel von anderen. Ich behalte mir außerdem das Recht vor unangemessene Artikel zu löschen.
+              <br>
+              Außer den Benutzerdaten speichere ich auch die Anzahl an Seitenaufrufen. Dazu benutze ich 
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage" target="_blank">Session Storage</a>. 
+              Ich speichere dabei keinerlei Hardwareinformationen, die IP Adresse oder ähnliches. Ich benutze keine Cookies!
+              <br>
+              Manchmal benutze ich für meinen englischen Inhalt den DeepL Übersetzer. Der ist wirklich gut, probiert ihn mal aus:
+                <a href="https://www.deepl.com/translator" target="_blank">DeepL</a>
+            </p>
+          </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+    </body>
+</html>

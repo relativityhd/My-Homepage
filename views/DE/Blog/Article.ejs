@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: '+article.title, 
+  webcontent: article.title+" - "+article.subtitle+" von "+article.author.username+", "+article.author.firstname+article.author.lastname}) %>
+  <style>
+    .page-content{
+      width: 60%;
+      max-width: 824px;
+      margin-top: 3%;
+      margin-bottom: 3%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hidden{
+      display: none !important;
+      visibility: hidden !important;
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .page-content{
+        width: 90%;
+      }
+    }
+    
+    .title{
+      font-variant: small-caps;
+      font-size: calc(36px + 3vw);
+      margin: 0%;
+    }
+    .subline{
+      font-size: calc(24px + 1vw);
+      color: rgba(0,0,0, .55);
+      margin: 0%;
+    }
+    .date,
+    .written,
+    .visits{
+      font-size: calc(12px + 0.5vw);
+      color: rgba(0,0,0, .55);
+      margin: 0;
+    }
+    .aboutText{
+      font-size: 18px;
+      color: rgba(0,0,0, .75);
+    }
+    .article-pic{
+      width: 95%;
+      max-width: 1024px;
+      max-height: 512px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      object-fit: cover;
+      -webkit-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      -moz-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+    }
+    .content{
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 3%;
+      margin-bottom: 3%;
+    }
+    .centered{
+      text-align: center;
+    }
+    .inline{
+      display: inline-block;
+    }
+    .ql-toolbar.ql-snow{
+      display: none;
+    }
+    .none{
+      opacity: 0;
+    }
+    .none:hover{
+      cursor: default;
+    }
+  </style>
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Blog",
+      "headline": "<%=article.title%>",
+      "description": "<%=article.subtitle%>",
+      "image": [
+        "<%= url.main.blog+url.blog.pictures+'?picID='+article.articlePicID%>"
+      ],
+      "datePublished": "<%=article.date%>",
+      "author": {
+        "@type": "Person",
+        "name": "<%=article.author.username + ' - ' +article.author.firstname+' '+article.author.lastname%>"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tobias Hölzer",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://tobiashoelzer.dynu.net/pics/favicon.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tobiashoelzer.dynu.net/de/blog/articles"
+      }
+    }
+  </script>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div class="hidden" id="quill"></div>
+          
+          <div class="centered">
+            <h1 class="title"><%=article.title%></h1>
+            <h4 class="subline"><%=article.subtitle%></h4>
+            <img class="article-pic" src="<%= url.main.blog+url.blog.pictures+'?picID='+article.articlePicID%>"><br>
+            <div class="tags-wrapper">
+              <% article.tags.forEach(function(tag) {%>
+                <span class="mdl-chip">
+                  <span class="mdl-chip__text"><%= tag %></span>
+                </span>
+              <% }) %> 
+            </div>
+          </div>
+          <div class="content" id="content"></div>
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--9-col">
+              <p class="date inline" id="date"></p>
+              <p class="written inline"><a href="/de<%=url.main.blog+url.blog.profile%>?user=<%=article.author._id%>">
+                <% if (article.author.firstname!=""||article.author.lastname!="") { %>
+                  <%=article.author.username + " - " +article.author.firstname+" "+article.author.lastname%>
+                <% }else{%>
+                  <%=article.author.username%>
+                <%}%>
+              </a></p>
+              <p class="visits" id="visits">Aufrufe: <%=article.visitors%></p>  
+            </div>
+            <div class="mdl-cell mdl-cell--3-col" style="text-align: right">
+              <%if (isAuthor) {%>
+              <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" href="/de<%=url.main.blog+url.blog.write%>?article=<%=article._id%>">
+                <i class="material-icons">create</i>
+              </a>
+              <% } %>
+              <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="share()">
+                <i class="material-icons">share</i>
+              </button>
+            </div>
+          </div>
+          <input class="none" id="input-copy" type="text" value="<%=protohost+originalUrl.split('/').slice(1).join('/')%>"/>
+        </div>
+        <div id="toast" class="mdl-js-snackbar mdl-snackbar">
+          <div class="mdl-snackbar__text"></div>
+          <button class="mdl-snackbar__action" type="button"></button>
+        </div>
+      </main>
+      <script src="/js_css/quill.js"></script>
+      <script src="/js_css/moment.js"></script>
+      <script>
+        var Content = $('#content')[0]
+        var Visits = $('#visits')[0]
+        var DateArt = $('#date')[0]
+        var notification = document.querySelector('#toast')
+
+        function snack (message) {
+          notification.MaterialSnackbar.showSnackbar({message: message})
+        }
+
+        function share () {
+          if (navigator.share) {
+            navigator.share({
+              title: 'Mein super Blog!',
+              text: '<%= article.title %>',
+              url: window.location.href
+            }).then(() => {
+              snack('Vielen Dank fürs teilen!');
+            }).catch(err => {
+              snack(`Konnte nicht geteilt werden. Fehler: `, err.message);
+            });
+          }else{
+            var copyText = document.querySelector("#input-copy");
+            copyText.select();
+            document.execCommand("copy");
+            snack('Web Share wird nicht unterstützt, copiere URL zum clipboard.');
+          }
+        }
+        
+        var toolbarOptions = [
+          [{ 'size': ['16px', '24px', '32px', '56px'] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [ 'link', 'image', 'video', 'formula' ],
+
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'indent': '-1'}, { 'indent': '+1' }, { 'align': [] }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],
+
+          ['code-block', 'clean'],
+        ]
+
+        var QFont = Quill.import('formats/font')
+        QFont.whitelist = ['roboto']
+        Quill.register(QFont, true)
+
+        var QSize = Quill.import('attributors/style/size')
+        QSize.whitelist = ['16px', '24px', '32px', '56px']
+        Quill.register(QSize, true)
+
+        var quill = new Quill('#quill', {
+          placeholder: 'Enter your text here...',
+          theme: 'snow',
+          modules: {
+            toolbar: toolbarOptions
+          }
+        })
+        quill.format('font', 'roboto')
+        
+        var article = <%-JSON.stringify(article)%>
+        DateArt.innerHTML += "Geschrieben "+ moment(article.date).fromNow() + " von  "
+        if (article) {
+          quill.setContents(JSON.parse(article.quilljs))
+          Content.innerHTML=quill.root.innerHTML
+
+        }
+        
+        if (typeof(Storage) !== "undefined") {
+          if (!sessionStorage.getItem(("article"+article._id))||sessionStorage.getItem(("article"+article._id))!="true") {
+            Visits.innerHTML = "Aufrufe: "+(article.visitors+1)
+            sessionStorage.setItem(("article"+article._id), "true")
+            socket.emit("addArticleVisitor" , {id: article._id})
+          }
+        }
+        
+      </script>
+      <%- include ../footer %>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,116 @@
+{
+  "files": {
+    "mello":{
+      "short_en":"Mello is a social media platform developed by some friends and me. At Mello, users should be able to design their own profile and determine more about content than on other sites.",
+      "short_de":"Mello ist eine Social Media Plattform, entwickelt von ein paar Freunden und mir. Bei Mello können Benutzer mehr über ihr Profil und Content entscheiden als auf anderen Seiten.",
+      "long":"Mello",
+      "pic":"mello-sn.jpg",
+      "prio":10
+    },
+    "cryptions":{
+      "short_en":"When I started programming, I tried to develop some crypto programs. These are the tools.",
+      "short_de":"Als ich mit dem programmieren angefangen habe, versuchte ich ein paar verschlüsselungsprogramme zu schreiben. Hier sind die Tools.",
+      "long":"Cryptions",
+      "pic":"encryption.jpg",
+      "prio":4
+    },
+    "scissors-paper-rock":{
+      "short_en":"The pretty first program I've made was a simple Scissors-Paper-Rock game. It was a task from school to develope this. I also added some extra tasks, like 'Lizzard' and 'Spock'. Use Python 2.8 for it!",
+      "short_de":"Das erste Spiel was ich entwickelt, in der Schule, habe war ein einfaches Schere-Stein-Papier Spiel. Ich habe noch ein paar extras eingebaut, z.B 'Echse' und 'Spock'. Läuft mit Python 2.8!",
+      "long":"nofile",
+      "pic":"sci-pa-ro.jpg",
+      "prio":5
+    },
+    "simon-clicks":{
+      "short_en":"A little game for hand-eye-coordination. Developed with my best friend. Have fun with it.",
+      "short_de":"Ein kleines Spiel für die Hand-Augen-Koordination. Entwickelt mit meinem bestem Freund. Habt Spaß damit.",
+      "long":"nofile",
+      "pic":"simon-clicks.jpg",
+      "prio":3
+    },
+    "clean-start-project":{
+      "short_en":"This is the construct for my homepage. Commented out, of course. Suitable to write your own website.",
+      "short_de":"Das ist das Konstrukt für meine Homepage. Auskommentiert natürlich. Geeignet um selbst eine eigene Website zu schreiben.",
+      "long":"nofile",
+      "pic":"myhomepage.jpg",
+      "prio":4
+    },
+    "one-shot-icons":{
+      "short_en":"I designed this icon pack for my gaming-team. If you liked them feel free to use them.",
+      "short_de":"Dieses Icon Packet habe ich für mein Gaming Team designt. Wenn sie dir gefallen, kannst du sie gerne benutzen.",
+      "long":"nofile",
+      "pic":"one-shot-icons.jpg",
+      "prio": 4
+    },
+    "password-generator":{
+      "short_en":"This is my password generator. You can use it without an account or with your Blog-Account.",
+      "short_de":"Das ist mein Passwort Generator. Du kannst ihn anonym oder mit deinem Blog-Account benutzen.",
+      "long":"Password",
+      "pic":"password-gen.jpg",
+      "prio":9
+    }
+  },
+  "pictures": {
+    "Dawn_with_Creeper":{
+      "short_en":"Made for a friend of mine. Free for use.",
+      "short_de":"Entwickelt für eine Freundin. Frei Nutzbar.",
+      "prio":3
+    },
+    "F1_2017_Emirates":{
+      "short_en":"Made with F1 2017 photo-editor. Free for use.",
+      "short_de":"Gemacht mit dem F1 2017 Photo-Editor. Frei Nutzbar.",
+      "prio":3
+    },
+    "F1_2017_Ferrari_vs_RedBull":{
+      "short_en":"Made with F1 2017 photo-editor. Free for use.",
+      "short_de":"Gemacht mit dem F1 2017 Photo-Editor. Frei Nutzbar.",
+      "prio":4
+    },
+    "F1_2017_RedBull":{
+      "short_en":"Made with F1 2017 photo-editor. Free for use.",
+      "short_de":"Gemacht mit dem F1 2017 Photo-Editor. Frei Nutzbar.",
+      "prio":2
+    },
+    "F1_2017":{
+      "short_en":"Made with F1 2017 photo-editor. Free for use.",
+      "short_de":"Gemacht mit dem F1 2017 Photo-Editor. Frei Nutzbar.",
+      "prio":4
+    },
+    "F1_2017_Wallpaper":{
+      "short_en":"Made with F1 2017 photo-editor. Free for use as desktop wallaper maybe.",
+      "short_de":"Gemacht mit dem F1 2017 Photo-Editor. Frei Nutzbar, vllt. als Hintergrund.",
+      "prio":3
+    },
+    "F1_Crash":{
+      "short_en":"F1 2016 screenshot. Edited with paint.net. Free for use.",
+      "short_de":"F1 2016 Screenshot. Bearbeitet mit paint.net. Frei Nutzbar.",
+      "prio":1
+    },
+    "Flowermania_I":{
+      "short_en":"Made for friends of mine after a MC project. Free for use.",
+      "short_de":"Gemacht nach einem MC Projekt mit Freunden. Frei Nutzbar.",
+      "prio":3
+    },
+    "Flowermania_II":{
+      "short_en":"Made for friends of mine after a MC project. Free for use.",
+      "short_de":"Gemacht nach einem MC Projekt mit Freunden. Frei Nutzbar.",
+      "prio":3
+    },
+    "Flowermania_III":{
+      "short_en":"Made for friends of mine after a MC project. Free for use.",
+      "short_de":"Gemacht nach einem MC Projekt mit Freunden. Frei Nutzbar.",
+      "prio":3
+    },
+    "Flowermania_IV":{
+      "short_en":"Made for friends of mine after a MC project. Free for use.",
+      "short_de":"Gemacht nach einem MC Projekt mit Freunden. Frei Nutzbar.",
+      "prio":3
+    },
+    "Shadows_of_the_Night":{
+      "short_en":"It began with an Idea. Free for use.",
+      "short_de":"Es began mit einer Idee. Frei Nutzbar.",
+      "prio":4
+    }
+    
+  }
+}

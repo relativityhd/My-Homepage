@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Blog - Tobias Hölzer - Teile dein Leben', 
+  webcontent: 'Webblog für euch alle. Bei meinem Blog kannst du dich anmelden um deine Geschichten zu teilen.'}) %>
+  <style>
+    main{
+      background: url('/pics/parallax/pxls.sea.jpg') fixed no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+    .content{
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .wrapper{
+      -webkit-box-shadow: inset 0px 0px 100px 0px rgba(0,0,0, 0.5);
+      -moz-box-shadow: inset 0px 0px 100px 0px rgba(0,0,0, 0.5);
+      box-shadow: inset 0px 0px 100px 0px rgba(0,0,0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .middle{
+      min-width: 520px;
+    }
+    .left{
+      min-width: 320px;
+      max-width: 570px;
+    }
+    .right{
+      min-width: 262px;
+    }
+
+    @media only screen and (max-width: 1461px) {
+      /* For mobile phones: */
+      .content{
+        width: 60%;
+      }
+      .middle{
+        min-width: 312px;
+        width: 100%;
+      }
+      .left{
+        min-width: 180px;
+        width: 100%;
+        margin-left: calc(50% - 285px);
+      }
+      .right{
+        min-width: 262px;
+        width: 100%;
+      }
+    }
+    @media only screen and (max-width: 1102px) {
+      /* For mobile phones: */
+      .content{
+        width: 95%;
+      }
+      .middle{
+        min-width: 312px;
+        width: 100%;
+      }
+      .left{
+        min-width: 180px;
+        width: 100%;
+        margin-left: calc(50% - 285px);
+      }
+      .right{
+        min-width: 262px;
+        width: 100%;
+      }
+    }
+    @media only screen and (max-width: 636px) {
+      /* For mobile phones: */
+      .left{
+        margin-left: 8px;
+      }
+    }
+
+    .card-wide > .mdl-card__title {
+      color: #fff;
+      min-height: 100px;
+      height: 21vw;
+      max-height: 150px;
+    }
+    .mdl-card__title-text {
+      font-size: 30px;
+    }
+    .card-wide > .mdl-card__supporting-text {
+      color: rgba(0,0,0, .76);
+      font-size: calc(9px + 0.6vw);
+      max-height: 70%;
+    }
+    .card-wide > .mdl-card__menu,
+    .card-square > .mdl-card__title,
+    .card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+    .card-wide.mdl-card {
+      min-width: 256px;
+      max-width: 1024px;
+      border-radius: 8px;
+      transition: .15s ease-out;
+      text-decoration: none;
+    }
+    @media only screen and (min-width: 480px) and (max-width: 1102px) {
+      .card-wide.mdl-card {
+        width: calc(100% - 16px)
+      }
+    }
+    .card-wide:hover {
+      transform: translateY(-10px)
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .mdl-chip {
+        display: none;
+      }
+    }
+    .article-views{
+      float: right;
+    }
+
+    .card-square.mdl-card {
+      width: 100%;
+      min-width: 160px;
+      max-width: 320px;
+      min-height: 320px;
+      margin-left: auto;
+      margin-right: auto;
+      transition: .15s ease-out;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .card-square.mdl-card:hover {
+      transform: translateY(-10px);
+    }
+    .ref-wrapper{
+      margin-bottom: 80px;
+    }
+
+    .mdl-dialog__content.mdl-grid.mdl-cell{
+      margin: 0px;
+    }
+    .mdl-card__actions{
+      background: #fff;
+    }
+    .about{
+      background: rgba(255,255,255,0.6);
+      color: rgba(0,0,0, .84);
+    }
+
+    .nextStepWrapper{
+      text-align: center;
+    }
+    .headline{
+      font-size: 32px;
+      color: #fff;
+      font-variant: small-caps;
+      text-align: center;
+      text-decoration: underline;
+      text-transform: uppercase;
+    }
+    .advline{
+      font-size: 20px;
+      color: #eee;
+      padding-left: 7%;
+      padding-right: 7%;
+    }
+
+    .mini-pics{
+      position: absolute;
+      transition: .25s ease-out;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+    }
+    .mini-pics img{
+      display: block;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: solid 2px #393939;
+      background: rgba(255,255,255, .5);
+    }
+    .author-wrapper{
+      width: 100%;
+      min-width: 225px;
+      height: 500px;
+    }
+    .image-line{
+      z-index: -1;
+      height: 64px;
+      width: 64px;
+      border-radius: 50%;
+      opacity: 1;
+      background: rgba(0,0,0, 0.05);
+      -webkit-transition: opacity 4.9s ease-out, width 4.9s ease-out, height 4.9s ease-out;
+      -moz-transition: opacity 4.9s ease-out, width 4.9s ease-out, height 4.9s ease-out;
+      -ms-transition: opacity 4.9s ease-out, width 4.9s ease-out, height 4.9s ease-out;
+      -o-transition: opacity 4.9s ease-out, width 4.9s ease-out, height 4.9s ease-out;
+      transition: opacity 4.9s ease-out, width 4.9s ease-out, height 4.9s ease-out;
+      position: absolute;
+    }
+    #author-lines{
+      transform: translateY(-500px);
+    }
+  </style>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include Blog/header-blog %>
+      <main class="mdl-layout__content">
+        <div class="content">
+          <div class="mdl-grid">
+
+            <div class="mdl-cell mdl-cell--3-col wrapper left">
+              <div class="ref-wrapper">
+                <h1 class="headline">willkommen auf meinem blog!</h1>
+                <p class="advline">Möchtest du deine inneren Gedanken und Geschichten aus deinem Leben teilen?<br> Dann probiere meinen Blog aus, du kannst gleich anfangen!</p>
+                <div class="nextStepWrapper">
+                <% if (user) {%>
+                  <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" href="/de<%=url.main.blog+url.blog.write%>">
+                    Schreibe einen Artikel!
+                  </a>
+                <%}else{%>
+                  <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised" style="color: #fff;" href="/de<%=url.main.blog+url.blog.write%>">
+                    Einloggen
+                  </a>
+                  <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" href="/de<%=url.main.blog+url.blog.register%>">
+                    Anmelden
+                  </a>
+                <%}%>
+                </div>
+              </div>
+              <hr>
+              <% if (me) {%>
+                <h1 class="headline">mein profil:</h1>
+                <a class="card-square mdl-card mdl-shadow--2dp mdl-cell--stretch" href="/de<%=url.main.blog%><%=url.blog.profile%>?user=<%=me._id%>"
+                    style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                      url(<%=url.main.blog+url.blog.pictures+'?picID='+me.profilePicID%>)
+                      center/cover no-repeat;">
+                  <div class="mdl-card__title mdl-card--expand">
+                    <h2 class="mdl-card__title-text"><%=me.username%></h2>
+                  </div>
+                  <% if (me.about.lastIndexOf(" ")!=-1 && me.about.length>=75 && me.about.length!=0) { %>
+                    <div class="mdl-card__supporting-text about">
+                      <%=me.about.substring(0, Math.min(75, me.about.substring(0, 75).lastIndexOf(" ")))%>...
+                    </div>
+                  <% }else if (me.about.length!=0){ %>
+                    <div class="mdl-card__supporting-text about">
+                      <%=me.about.substring(0, 75) %>
+                    </div>
+                  <% } %>
+                  <div class="mdl-card__actions mdl-card--border">
+                    <div class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                      <%=me.username%> - <%=me.firstname%> <%=me.lastname%>
+                    </div>
+                  </div>
+                </a>
+              <%}%>
+            </div>
+
+            <div class="mdl-cell mdl-cell--6-col wrapper middle">
+              <h1 class="headline">neueste artikel</h1>
+              <div class="mdl-grid article-wrapper">
+                <% articles.forEach(function(article) { %>
+                  <a class="mdl-cell mdl-cell--6-col card-wide mdl-card mdl-shadow--2dp" href="/de<%=url.main.blog+url.blog.articles%>?article=<%=article._id%>">
+                    <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                                                        url(<%=url.main.blog+url.blog.pictures%>?picID=<%=article.articlePicID+"#"+articles.indexOf(article)%>)
+                                                        center/cover no-repeat;">
+                      <h2 class="mdl-card__title-text"><%=article.title%></h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                      <% if (article.subtitle.lastIndexOf(" ")!=-1 && article.subtitle.length>=200) { %>
+                        <%= article.subtitle.substring(0, Math.min(400, article.subtitle.substring(0, 400).lastIndexOf(" ")))%>...
+                      <% }else{ %>
+                        <%= article.subtitle.substring(0, 400) %>
+                      <% }%>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                      <div class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                        Artikel lesen
+                      </div>
+                      <p class="article-views">Aufrufe: <%=article.visitors%></p>
+                    </div>
+                    <div class="mdl-card__menu tags">
+                    <% article.tags.forEach(function(tag) { %>
+                      <span class="mdl-chip">
+                        <span class="mdl-chip__text"><%= tag %></span>
+                      </span>
+                    <%})%>
+                    </div>
+                  </a>
+                <%})%>
+              </div>
+            </div>
+
+            <div class="mdl-cell mdl-cell--3-col wrapper right">
+              <h1 class="headline"><%= authors.length %> Blogger teilen bereits ihr Leben!</h1>
+              <p class="advline">Teile deine Abenteuer mit anderen!</p>
+              <div class="author-wrapper" id="pic-wrapper">
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+    </body>
+    <script>
+
+      var picWrapper = $('#pic-wrapper')[0],
+          canvas = $('#author-lines')[0],
+          left, right,
+          authors = <%-JSON.stringify(authors)%>,
+          url = <%-JSON.stringify(url)%>
+
+      function getRandomFloat(min,max) {
+        return Math.random()*(max-min) + min;
+      }
+
+      Number.prototype.between = function(a, b) {
+        var min = Math.min(a, b),
+            max = Math.max(a, b)
+        return this > min && this < max
+      }
+
+      // Benchamark ===============================================================
+
+      function benchmarkTest() {
+        var radius = 64 + 2 + 32
+            maxH = parseInt(picWrapper.offsetWidth/radius),
+            maxV = parseInt(picWrapper.offsetHeight/radius)
+        for (var i=0;i<maxH*maxV*50;i++) {
+          rambles(0,0, true)
+        }
+      }
+      var IsGoodPerformance
+      function benchmark() {
+        var StartTime = new Date().getTime()
+        benchmarkTest()
+        var EndTime = new Date().getTime(),
+            ElapsedMilliseconds = EndTime - StartTime,
+            AcceptableTime = 50
+        console.log(ElapsedMilliseconds)
+        IsGoodPerformance = ElapsedMilliseconds < AcceptableTime
+        setTimeout(function(){benchmark()}, 10000)
+      }
+      // benchmark()
+
+      // Bubbles ====================================================================
+      function rambles (left, top, hidden) {
+        // todo kill childs at resize
+        var line = document.createElement('div')
+        line.classList.add("image-line")
+        line.style.transform = "translate("+left+"px, "+top+"px)"
+        if (!hidden) {
+          picWrapper.appendChild(line)
+        }
+        setTimeout(function() {
+          line.style.opacity = "0"
+          // looks nice, works scheiß
+          // line.style.height = "8px"
+          // line.style.width = "8px"
+        }, 100)
+        setTimeout(function() {
+          if (line.parentElement) picWrapper.removeChild(line)
+        }, 5000)
+      }
+
+      function randomPosition(element, i) {
+        var vspeed = getRandomFloat(-1, 1)
+        var hspeed = getRandomFloat(-1, 1)
+        if (element.vspeed+vspeed<7 && element.vspeed+vspeed>-7) {
+          element.vspeed += vspeed
+        }
+        if (element.hspeed+hspeed<7 && element.hspeed+hspeed>-7) {
+          element.hspeed += hspeed
+        }
+        var switchH = parseInt(element.left+element.hspeed).between(0, picWrapper.offsetWidth-element.offsetHeight) ? false : true,
+            switchV = parseInt(element.top+element.vspeed).between(0, picWrapper.offsetHeight-element.offsetHeight) ? false : true
+        
+        if (!switchH || !switchV) {
+          $('.mini-pics').each(function(j) {
+            if (i!=j) {
+              other = $(this)[0]
+
+              var circle1 = {radius: (element.offsetHeight+2)/2, x: element.left+element.hspeed, y: element.top+element.vspeed};
+              var circle2 = {radius: (other.offsetHeight+2)/2, x: other.left, y: other.top};
+
+              var dx = circle1.x - circle2.x;
+              var dy = circle1.y - circle2.y;
+              var distance = Math.sqrt(dx * dx + dy * dy);
+
+              if (distance < circle1.radius + circle2.radius) {
+                switchH = true
+                switchV = true
+              }
+            }
+          })
+        }
+
+        if (switchH) {element.hspeed*=-1}
+        if (switchV) {element.vspeed*=-1}
+
+        if (element.parentElement && IsGoodPerformance) {
+          var left = element.left
+          var top = element.top
+          rambles(left, top)
+        }
+
+        element.left = element.left + element.hspeed
+        element.top = element.top + element.vspeed
+
+        element.style.transform = "translate("+element.left+"px, "+element.top+"px)"
+        if (element.parentElement) {
+          setTimeout(function() {randomPosition(element, i)}, 100)
+        }
+      }
+    
+      function initPics (init) {
+        // radius = element height or width + border + margin to others
+        var radius = 64 + 2 + 32
+            maxH = parseInt(picWrapper.offsetWidth/radius),
+            maxV = parseInt(picWrapper.offsetHeight/radius)
+        if (init) {
+          picWrapper.innerHTML = ""
+          for (var i=0; i<Math.min(authors.length, maxH*maxV); i++) {
+            var author=authors[i]
+            picWrapper.innerHTML += `
+              <a class="mini-pics" href="/de`+url.main.blog+url.blog.profile+`?user=`+author._id+`">
+                <img src="`+url.main.blog+url.blog.pictures+'?picID='+author.profilePicID+"#"+authors.indexOf(author)+`">
+              </a>`
+          }
+        }else{
+          var count = 0
+          $('.mini-pics').each(function(i) {
+            count++
+          })
+          if (count<Math.min(authors.length, maxH*maxV)-1) {
+            for (var i=count; i<Math.min(authors.length, maxH*maxV); i++) {
+              var author=authors[i]
+              picWrapper.innerHTML += `
+                <a class="mini-pics" href="/de`+url.main.blog+url.blog.profile+`?user=`+author._id+`">
+                  <img src="`+url.main.blog+url.blog.pictures+'?picID='+author.profilePicID+"#"+authors.indexOf(author)+`">
+                </a>`
+            }
+            init = true
+          }
+        }
+        $('.image-line').each(function(i) {
+          element = $(this)[0]
+          picWrapper.removeChild(element)
+        })
+        $('.mini-pics').each(function(i) {
+          element = $(this)[0]
+          if (i>=maxH*maxV) {
+            element.valid = "false"
+            picWrapper.removeChild(element)
+            return false
+          }else{
+            element.vspeed = Math.random() >= 0.5 ? getRandomFloat(3, 5) : getRandomFloat(-5, -3)
+            element.hspeed = Math.random() >= 0.5 ? getRandomFloat(3, 5) : getRandomFloat(-5, -3)
+            element.left = radius*(i%maxH)
+            element.top = radius*parseInt(i/maxH)
+            element.style.transform = "translate("+element.left+"px, "+element.top+"px)"
+            element.valid = "true"
+            if (init) {
+              randomPosition(element, i)
+            }
+          }
+        })
+      }
+
+      window.onresize = function() {
+        /*console.log("Outer Width: ", window.outerWidth, " | Width: ", screen.width, " | Outer Height: ", window.outerHeight, " | Height: ", screen.height)
+        console.log("Wrapper Width: ", picWrapper.offsetWidth, " | Wrapper Height: ", picWrapper.offsetHeight)
+        console.log(" ###---### ")*/
+        initPics(false)
+      }
+      initPics(true)
+
+    </script>
+</html>

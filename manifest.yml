@@ -1,0 +1,10 @@
+---
+applications:
+- name: my-homepage
+  buildpacks:
+    - https://github.com/cloudfoundry/staticfile-buildpack.git
+  routes:
+    - route: tobiashoelzer.eu-de.mybluemix.net
+    - route: tobiashoelzer.dynu.net
+  memory: 128M
+  FORCE_HTTPS: true

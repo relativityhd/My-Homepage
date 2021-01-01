@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <%- include head %>
+  <style>
+    #selection-wrapper{
+      font-size: 7vh;
+      text-align: center;
+      margin-top: 5%;
+      line-height: 50%;
+    }
+    #img-wrapper{
+      text-align: center;
+    }
+    .no-text-deco{
+      text-decoration: none;
+    }
+    .img{
+      width: 10%;
+      height: auto;
+      margin-top: 5%;
+      border-radius: 50%;
+      border: solid 2px #111;
+    }
+    .lang-en{
+      font-size: 3vw;
+      color: #222;
+      margin: 0;
+      line-height: 4vw;
+    }
+    .lang-de{
+      font-size: 3vw;
+      color: #444;
+      margin: 0;
+      line-height: 4vw;
+    }
+    .bar-lang{
+      margin-left: 20%;
+      font-variant: small-caps;
+    }
+    .small{
+      font-size: 2vw;
+      margin: 0;
+      line-height: 2.5vw;
+    }
+  </style>
+  <body>
+    <%- include loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title titlename"><img class="title-t" src="/pics/favicon.png" alt="T">obias Hölzer</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We hide it in small screens. -->
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title titlename">Tobias Hölzer</span>
+        <nav class="mdl-navigation">
+          <h5 class="bar-lang">English</h5>
+          <a class="mdl-navigation__link" href="/en<%=url.main.route%>"><i class="material-icons">home</i></a>
+          <a class="mdl-navigation__link" href="/en<%=url.main.aboutme%>">about me</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.work%>">work</a>
+          <a class="mdl-navigation__link" href="/en<%=url.main.blog%>">blog</a>
+          <a class="mdl-navigation__link" href="/en<%=url.main.references%>">contact</a>
+          <hr>
+          <h5 class="bar-lang">German</h5>
+          <a class="mdl-navigation__link" href="/de<%=url.main.route%>"><i class="material-icons">home</i></a>
+          <a class="mdl-navigation__link" href="/de<%=url.main.aboutme%>">Über mich</a>
+      <a class="mdl-navigation__link" href="/de<%=url.main.work%>">Leistung</a>
+          <a class="mdl-navigation__link" href="/de<%=url.main.blog%>">Block</a>
+          <a class="mdl-navigation__link" href="/de<%=url.main.references%>">Kontakt</a>
+        </nav>
+      </div>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div id="selection-wrapper">
+            <p class="lang-en">Sorry, page not found.</p>
+            <p class="lang-de">Entschuldigung, Seite nicht gefunden.</p>
+          </div>
+          <div id="img-wrapper">
+            <a class="no-text-deco" href="javascript:history.back()">
+              <img class="img" src="/pics/error.png" alt="Back / Zurück">
+              <p class="lang-en small">Back on track.</p>
+              <p class="lang-de small">Zurück ans Land.</p>
+            </a>
+          </div>
+        </div>
+      </main>
+      <footer class="mdl-mini-footer">
+        <div class="mdl-mini-footer__left-section">
+          <div class="mdl-logo">Tobias Hölzer</div>
+          <div class="mdl-mini-footer__right-section">
+            <a class="lang-en-footer" href="/en<%=url.main.references%>">Contact & References</a>
+            <a class="lang-de-footer" href="/de<%=url.main.references%>">Kontakt und Impressum</a>
+          </div>
+        </div>
+        <div class="mdl-mini-footer__right-section">
+          <div class="lang-en-footer">Nobody reads the footer.</div>
+          <div class="lang-de-footer">Niemand liest den Footer.</div>
+        </div>
+      </footer>
+    </div>
+    </body>
+</html>

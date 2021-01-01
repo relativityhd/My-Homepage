@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'Playground - Tobias Hölzer', webcontent: 'My personal Playground to develope and test new things.'}) %>
+  <style>
+  </style>
+  <body>
+    <%- include ../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header %>
+      <div class="hidden" id="userid"><%= userid %></div>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+
+          <script>
+            function testDates(now){
+              let nowStamp = now.getTime()
+              let yesterday = new Date(nowStamp+1000*60*60*24)
+              if (now.getDay() == 6) {
+                yesterday = new Date(nowStamp+1000*60*60*24*2)
+              } else if (now.getDay() == 5) {
+                yesterday = new Date(nowStamp+1000*60*60*24*3)
+              }
+              yesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate())
+              return yesterday
+            }
+
+            console.log("Sunday 09: ", testDates(new Date(2020, 1, 9)))
+            console.log("Monday 10: ", testDates(new Date(2020, 1, 10)))
+            console.log("Tuesday 11: ", testDates(new Date(2020, 1, 11)))
+            console.log("Wednesday 12: ", testDates(new Date(2020, 1, 12)))
+            console.log("Thursday 13: ", testDates(new Date(2020, 1, 13)))
+            console.log("Friday 14: ", testDates(new Date(2020, 1, 14)))
+            console.log("Saturday 15: ", testDates(new Date(2020, 1, 15)))
+            console.log("Sunday 16: ", testDates(new Date(2020, 1, 16)))
+
+            console.log("=== Test Set One Complete == ")
+            
+            console.log("Friday 28: ", testDates(new Date(2020, 1, 28)))
+            console.log("Saturday 29: ", testDates(new Date(2020, 1, 29)))
+            console.log("Sunday 01: ", testDates(new Date(2020, 2, 1)))
+            console.log("Monday 02: ", testDates(new Date(2020, 2, 2)))
+            console.log("Tuesday 03: ", testDates(new Date(2020, 2, 3)))
+            console.log("Wednesday 04: ", testDates(new Date(2020, 2, 4)))
+            console.log("Thursday 05: ", testDates(new Date(2020, 2, 5)))
+            console.log("Friday 06: ", testDates(new Date(2020, 2, 6)))
+
+            console.log("=== Test Set Two Complete == ")
+          </script>
+
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+  </body>
+</html>

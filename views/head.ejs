@@ -1,0 +1,34 @@
+<head>
+  <title><%= typeof(webtitle)!="undefined" ? webtitle : 'Tobias Hölzer'%></title>
+  <meta name="description" content="<%= typeof(webcontent)!='undefined' ? webcontent : 'Homepage of Tobias Hölzer. Student from Berlin living in Stuttgart. Working at IBM, studying at DHBW. Interested in IT, Web, Social and much more.'%>">
+  <% if (originalUrl.split('/')[1] == "de" || originalUrl.split('/')[1] == "en") { %>
+  <link rel="alternate" hreflang="en"
+        href="<%=protohost+ 'en/' + originalUrl.split('/').slice(2).join('/')%>" />
+  <link rel="alternate" hreflang="de"
+        href="<%=protohost+ 'de/' + originalUrl.split('/').slice(2).join('/')%>"/>
+  <link rel="alternate" hreflang="x-default"
+        href="<%=protohost+ 'lang?path=/' + originalUrl.split('/').slice(2).join('/')%>"/>
+  <%}%>
+  <link rel="icon" href="/pics/favicon.png">
+  <link rel="stylesheet" href="/js_css/mdl.min.css">
+  <link rel="stylesheet" href="/js_css/rules.min.css">
+  <script defer src="/js_css/mdl.min.js"></script>
+  <script src="/js_css/jQuery.min.js"></script>
+  <script src="/js_css/socketIO.js"></script>
+  <script>
+    // Connect with serverside socket
+    var socket = io()
+    socket.on('connect', () => {
+      // Count Visitors
+      if (typeof(Storage) !== "undefined") {
+        if (!sessionStorage.getItem("visited")||sessionStorage.getItem("visited")!="true" && /bot|crawler|spider|crawling/i.test(navigator.userAgent)) {
+          sessionStorage.setItem("visited", "true")
+          socket.emit("addVisitor" , {valid: true})
+        }
+      }
+    })
+  </script>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>

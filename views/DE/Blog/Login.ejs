@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Einloggen - Tobias Hölzer', webcontent: 'Logge dich ein um deine eigenen Artikel zu schreiben.'}) %>
+  <style>
+    .hidden{
+      visibility: hidden;
+      display: block !important;
+    }
+    .data-input{
+      display: block;
+      text-align: center;
+    }
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    main{
+      min-height: 550px;
+      /* Images from:
+      https://www.pexels.com/photo/photo-of-woman-674268/ 
+      https://www.pexels.com/photo/adult-alone-blur-close-up-1172207/
+      https://www.pexels.com/photo/woman-carrying-black-backpack-2346112/ */
+      background: url('/pics/parallax/pxls.forest.jpg') fixed no-repeat;
+      background-size: cover;
+      background-position: center; 
+    }
+    #container{
+      width: 350px;
+      height: 400px;
+      background: inherit;
+      position: absolute;
+      overflow: hidden;
+      left: 50%;
+      top: 20%;
+      margin-left: -175px;
+      border-radius: 8px;
+    }
+    #container:before{
+      width: 400px;
+      height: 450px;
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: -25px;
+      bottom: 0;
+      right: 0;
+      background: inherit;
+      box-shadow: inset 0 0 0 200px rgba(255,255,255,0.2);
+      -webkit-filter: blur(10px);
+      filter: blur(10px);
+    }
+    form{
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+    }
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+
+        <div class="page-content" id="container"><!-- Your content goes here -->
+          <form action="/de<%=url.main.blog%><%=url.blog.login%>?path=<%=path%>" method="post">
+            <h1 class="mainText">Hallo!</h1>
+            <p class="subText">Noch keinen Account? <a href="/de<%=url.main.blog+url.blog.register%>">Anmelden</a></p>
+            <% if (err) { %><h1>Irgendetwas lief falsch!</h1><%}%>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+              <input class="mdl-textfield__input" type="text" id="username" name="username" onkeyup="checkUsername()" value="<%= data.username %>">
+              <label class="mdl-textfield__label" for="username">Benutzername</label>
+              <span class="mdl-textfield__error hidden" id="username_err">Benutzername existiert nicht!</span>
+              <span class="mdl-textfield__error hidden" id="username_check">Prüfe Benutzernamen!</span>
+            </div>
+
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label data-input">
+              <input class="mdl-textfield__input" type="password" id="password" name="password" onkeyup="checkPassword()" value="<%= data.password %>">
+              <label class="mdl-textfield__label" for="password">Passwort</label>
+              <span class="mdl-textfield__error hidden" id="password_err">Falsches Passwort!</span>
+              <span class="mdl-textfield__error hidden" id="password_check">Prüfe Passwort!</span>
+            </div>
+
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" style="float: right" id="login" disabled>
+              Einloggen
+            </button>
+          </form>
+        </div>
+      </main>
+
+      <script>
+        
+        // Get all important HTML Elements
+        var UsernameInput = $('#username')[0]
+        var PasswordInput = $('#password')[0]
+        var LoginButton = $('#login')[0]
+
+        var UsernameCheck = $('#username_check')[0]
+        var PasswordCheck = $('#password_check')[0]
+        var UsernameErr = $('#username_err')[0]
+        var PasswordErr = $('#password_err')[0]
+
+        // Set Verification Valid and Counter
+        var usernameValid = false
+        var passwordValid = false
+        var usernameCheckCounter = 0
+        var passwordCheckCounter = 0
+        
+        // On Load
+        LoginButton.disabled=true
+        
+        // Verify Username
+        var lastUsername
+        function checkUsername() {
+          lastUsername = Date.now()
+          setTimeout(function() {
+            if ((Date.now()-lastUsername)>499) {
+              usernameCheckCounter++
+              usernameValid=false
+              UsernameCheck.style.visibility="visible"
+              UsernameErr.style.visibility="hidden"
+              socket.emit("loginRequestUsernameValidation" , {username: UsernameInput.value})
+            }
+          }, 500)
+        }
+        
+        socket.on("loginResponseUsernameValidation", function (data) {
+          usernameCheckCounter--
+          if (usernameCheckCounter<=0) {
+            UsernameCheck.style.visibility="hidden"
+            if (data.valid) {
+              UsernameErr.style.visibility="hidden"
+              usernameValid=true
+            }else{
+              UsernameErr.style.visibility="visible"
+              usernameValid=false
+            }
+            validate()
+            checkPassword()
+          }
+        })
+        
+        // Verify Password
+        var lastPassword
+        function checkPassword() {
+          lastPassword = Date.now()
+          setTimeout(function() {
+            if ((Date.now()-lastPassword)>499) {
+              passwordCheckCounter++
+              passwordValid=false
+              PasswordCheck.style.visibility="visible"
+              PasswordErr.style.visibility="hidden"
+              socket.emit("loginRequestPasswordValidation" , {
+                username: UsernameInput.value,
+                password: PasswordInput.value
+              })
+            }
+          }, 500)
+        }
+        
+        socket.on("loginResponsePasswordValidation", function (data) {
+          passwordCheckCounter--
+          if (passwordCheckCounter<=0) {
+            PasswordCheck.style.visibility="hidden"
+            if (data.valid) {
+              PasswordErr.style.visibility="hidden"
+              passwordValid=true
+            }else{
+              PasswordErr.style.visibility="visible"
+              passwordValid=false
+            }
+            validate()
+          }
+        })
+        
+        // Change Register Status
+        function validate() {
+          if (passwordValid&&usernameValid) {
+            LoginButton.disabled=false
+          }else {
+            LoginButton.disabled=true
+          }
+        }
+      </script>
+      <%- include ../footer %>
+    </div>
+  </body>
+</html>

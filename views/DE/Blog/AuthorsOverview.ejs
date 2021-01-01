@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../../head', {webtitle: 'Blog: Blogger - Tobias Hölzer', webcontent: 'Suche einen Blogger oder finde neue die deine Interessen teilen.'}) %>
+  <style>
+    .page-wrapper{
+      width: 80%;
+      margin-top: 3%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .authors-wrapper{
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .authors{
+      width: 100%;
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .authors-wrapper{
+        width: 99%;
+      }
+    }
+    .demo-card-square.mdl-card {
+      width: 320px;
+      height: 320px;
+      transition: .15s ease-out;
+      border-radius: 8px;
+    }
+    .demo-card-square.mdl-card:hover {
+      width: 324px;
+      height: 324px;
+      cursor: pointer;
+    }
+
+    .demo-card-square > .mdl-card__title,
+    .demo-card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+
+    .mdl-dialog__content.mdl-grid.mdl-cell{
+      margin: 0px;
+    }
+    .mdl-card__actions{
+      background: #fff;
+    }
+    .about{
+      background: rgba(255,255,255,0.6);
+      color: rgba(0,0,0, .84)
+    }
+
+    
+    .dialog{
+      position: fixed; /* Sit on top of the page content */
+      transform: translate(0px, -1056px);
+      transition: 0.3s ease-out;
+      max-height: calc(97% - 122px);
+      width: 80%;
+      top: 122px;
+      background: #fff;
+      overflow-y: auto;
+      z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+
+    #dialog-bg{
+      position: fixed;
+      min-width: 100%;
+      top: 0%;
+      width: 100%;
+      min-height: 100%;
+      height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 1;
+      transition: 0.3s;
+    }
+    .centered{
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .blurred{
+      -webkit-filter: blur(10px);
+      -moz-filter: blur(10px);
+      -ms-filter: blur(10px);
+      -o-filter: blur(10px);
+      filter: blur(10px); 
+    }
+    .hiddenDisplay{
+      display: none;
+    }
+
+    .mainText{
+      margin-bottom: 3px;
+      margin-top: 0;
+    }
+    .subText{
+      margin-bottom: 5px;
+      margin-top: 3px;
+      font-size: 16px;
+    }
+    .aboutText{
+      margin-top: 20px;
+    }
+    .profile-pic{
+      width: 95%;
+      max-width: 512px;
+      max-height: 512px;
+      border-radius: 8px;
+      -webkit-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      -moz-box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+      box-shadow: 0 5px 5px 0 rgba(0,0,0,.14),0 7px 2px -3px rgba(0,0,0,.2),0 2px 10px 0 rgba(0,0,0,.12);
+    }
+    .articles-grid{
+      min-width: 240px;
+    }
+    .articles{
+      overflow-y: auto;
+      max-height: 500px;
+    }
+    .article-views{
+      display: inline-block;
+      float: right;
+    }
+    .inline{
+      display: inline-block;
+    }
+    .tags{
+      overflow-x: auto;
+    }
+
+  </style>
+  <body>
+    <%- include ../../loader %>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header-blog %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <div class="page-wrapper">
+            <h1 class="mainText">Blogger</h1>
+            <div class="inline" id="search-container">
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                <label class="mdl-button mdl-js-button mdl-button--icon" for="search" id="seach-icon">
+                  <i class="material-icons">search</i>
+                </label>
+                <div class="mdl-textfield__expandable-holder">
+                  <input class="mdl-textfield__input" type="text" id="search" onkeyup="find()">
+                </div>
+              </div>
+              <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner" id="spinner"></div>
+            </div>
+          </div>
+          <div class="authors-wrapper">
+            <div class="mdl-grid authors" id="author-container">
+              <% authors.forEach(function(author) {%>
+              <div class="mdl-cell mdl-cell--4-col demo-card-square mdl-card mdl-shadow--2dp mdl-cell--stretch" onclick="maximizeUser('<%=author._id%>')"
+                style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                  url(<%=url.main.blog+url.blog.pictures+'?picID='+author.profilePicID+"#"+authors.indexOf(author)%>)
+                  center/cover no-repeat;">
+                <div class="mdl-card__title mdl-card--expand">
+                  <h2 class="mdl-card__title-text"><%=author.username%></h2>
+                </div>
+                <% if (author.about.lastIndexOf(" ")!=-1 && author.about.length>=75 && author.about.length!=0) { %>
+                  <div class="mdl-card__supporting-text about">
+                    <%=author.about.substring(0, Math.min(75, author.about.substring(0, 75).lastIndexOf(" ")))%>...
+                  </div>
+                <% }else if (author.about.length!=0){ %>
+                  <div class="mdl-card__supporting-text about">
+                    <%=author.about.substring(0, 75) %>
+                  </div>
+                <% } %>
+                <div class="mdl-card__actions mdl-card--border">
+                  <% if (author.firstname!="" || author.lastname!="") {%>
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de<%=url.main.blog%><%=url.blog.profile%>?user=<%=author._id%>">
+                      <%=author.username%> - <%=author.firstname%> <%=author.lastname%>
+                    </a>
+                  <%}else{%>
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de<%=url.main.blog%><%=url.blog.profile%>?user=<%=author._id%>">
+                      <%=author.username%>
+                    </a>
+                  <%}%>
+                </div>
+              </div>
+              <%})%>
+            </div>
+          </div>
+        </div>
+
+        <div class="centered">
+          <div class="mdl-dialog dialog" id="dialog">
+            <div style="position: absolute; right: 0px;">
+              <button type="button" class="mdl-button" id="dialog_close" onclick="closeMaxMode()"><i class="material-icons">close</i></button>
+            </div>
+            <div class="mdl-dialog__content">
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--4-col content">
+                  <img class="profile-pic" id="max-photo">
+                </div>
+                <div class="mdl-cell mdl-cell--4-col">
+                    <h3 class="mainText" id="max-username"></h3>
+                    <h5 class="subText" id="max-names"></h5>
+                    <p class="aboutText" id="max-about"></p>
+                </div>
+                <div class="mdl-cell mdl-cell--4-col articles-grid">
+                    <h3 class="mainText">Bloggers Artikel:</h3>
+                    <div class="mdl-grid articles" id="max-articles"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mdl-dialog__actions">
+              <a type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="max-visit">Profil anschauen</a>
+              <button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="closeMaxMode()">Schließen</button>
+            </div>
+          </div>
+        </div>
+        <div id="dialog-bg" class="hiddenDisplay" onclick="closeMaxMode()"></div>
+
+        <div class="mdl-tooltip mdl-tooltip--large" for="dialog_close">Schließen</div>
+        <div class="mdl-tooltip mdl-tooltip--large" for="seach-icon">Suchen</div>
+      </main>
+      <script>
+        var AuthorContainer = $('#author-container')[0]
+        var Spinner = $('#spinner')
+        var SearchInp = $('#search')[0]
+        
+        var queries = 0
+        var url = <%-JSON.stringify(url)%>
+        var authors = <%-JSON.stringify(authors)%>
+
+        // Search ==============================================================================================================================================
+        function find() {
+          queries++
+          if (!Spinner.hasClass("is-active")) {
+            Spinner.addClass("is-active")
+          }
+          socket.emit("searchAuthorRequest", {word: SearchInp.value})
+        }
+
+        socket.on("searchAuthorResult", function (data) {
+          queries--
+          if (queries==0 && Spinner.hasClass("is-active")) {
+            Spinner.removeClass("is-active")
+          }
+          AuthorContainer.innerHTML = ""
+          if (data.authors.length==0) {
+            AuthorContainer.innerHTML = `<h5 class="subText">Es scheint, als ob das was du suchst nicht hier ist...</h5>`
+          }
+          data.authors.forEach(author => {
+            var about = "",
+                names
+            if (author.about.lastIndexOf(" ")!=-1 && author.about.length>=75 && author.about.length!=0) {
+              about = '<div class="mdl-card__supporting-text about">' + author.about.substring(0, Math.min(75, author.about.substring(0, 75).lastIndexOf(" "))) + '</div>'
+            }else if (author.about.length!=0) {
+              about = '<div class="mdl-card__supporting-text about">' + author.about.substring(0, 75) + '</div>'
+            }
+            if (author.firstname!="" || author.lastname!="") {
+              names = author.username + " - " + author.firstname + " " + author.lastname
+            }else{
+              names = author.username
+            }
+            AuthorContainer.innerHTML += `
+            <div class="mdl-cell mdl-cell--4-col demo-card-square mdl-card mdl-shadow--2dp mdl-cell--stretch" onclick="maximizeUser('`+author._id+`')"
+                style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                  url(`+url.main.blog+url.blog.pictures+`?picID=`+author.profilePicID+"#"+authors.indexOf(author)+`) center/cover no-repeat;">
+              <div class="mdl-card__title mdl-card--expand">
+                <h2 class="mdl-card__title-text">`+author.username+`</h2>
+              </div>
+              `+about+`
+              <div class="mdl-card__actions mdl-card--border">
+                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de`+url.main.blog+url.blog.profile+`?user=`+author._id+`">
+                  `+names+`
+                </a>
+              </div>
+            </div>`
+          })
+        })
+
+        // Big Mode ============================================================================================================================================
+        var Dialog = $('#dialog')
+        var DialogBG = $('#dialog-bg')
+        var Page = $('.page-content')
+
+        var Photo = $('#max-photo')[0]
+        var Username = $('#max-username')[0]
+        var Names = $('#max-names')[0]
+        var About = $('#max-about')[0]
+        var Visit = $('#max-visit')[0]
+        var Articles = $('#max-articles')[0]
+
+        function maximizeUser(id) {
+          authors.forEach(function(author) {
+            if (author._id.toString()==id.toString()) {
+
+              Photo.src = url.main.blog + url.blog.pictures + "?picID=" + author.profilePicID
+              Username.innerHTML = author.username
+              Names.innerHTML = author.firstname + " " + author.lastname
+              if (author.about=="") {
+                About.innerHTML = author.username + " ist ein Blogger ohne Vergangenheit..."
+              }else{
+                About.innerHTML = author.about
+              }
+              Visit.href = "/de" + url.main.blog + url.blog.profile + "?user="+ author._id
+              Articles.innerHTML = ""
+              if (author.articles.length==0 || (author.articles.filter(article => article.public).length==0)) {
+                Articles.innerHTML = "Wow, so wenig los..."
+              }
+              author.articles.forEach(function(article) {
+                if (article.public) {
+                  var subtitle,
+                      tags = ""
+                  if (article.subtitle.lastIndexOf(" ")!=-1 && article.subtitle.length>=75) {
+                    subtitle = article.subtitle.substring(0, Math.min(75, article.subtitle.substring(0, 75).lastIndexOf(" ")))+"..."
+                  }else{
+                    subtitle = article.subtitle.substring(0, 75)
+                  }
+                  article.tags.forEach(function(tag) {
+                    tags += `
+                    <span class="mdl-chip">
+                      <span class="mdl-chip__text">`+tag+`</span>
+                    </span>`
+                  })
+                  Articles.innerHTML += `
+                  <div class="mdl-cell mdl-cell--4-col demo-card-wide mdl-card mdl-shadow--2dp" >
+                    <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+                                                        url(`+url.main.blog+url.blog.pictures+`?picID=`+article.articlePicID+`)
+                                                        center/cover no-repeat;">
+                      <h2 class="mdl-card__title-text">`+article.title+`</h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">`+subtitle+`</div>
+                    <div class="mdl-card__actions mdl-card--border">
+                      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/de`+url.main.blog+url.blog.articles+`?article=`+article._id+`">
+                        Read Article
+                      </a>
+                      <p class="article-views">Aufrufe: `+article.visitors+`</p>
+                    </div>
+                    <div class="mdl-card__menu tags">
+                    `+tags+`
+                    </div>
+                  </div>`
+                }
+              })
+
+              Dialog[0].style.transform = "translate(0px, 0px)"
+              DialogBG.removeClass('hiddenDisplay')
+              setTimeout(function() {
+                DialogBG[0].style.opacity=0.8
+                Page.addClass('blurred')
+              }, 20)
+            }
+          })
+        }
+
+        function closeMaxMode() {
+          Dialog[0].style.transform = "translate(0px, -1056px)"
+          DialogBG[0].style.opacity=0
+          Page.removeClass('blurred')
+          DialogBG.one('transitionend', function(e) {
+            DialogBG.addClass('hiddenDisplay')
+          })
+        }
+      </script>
+      <%- include ../footer %>
+    </div>
+    </body>
+</html>

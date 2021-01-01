@@ -1,0 +1,33 @@
+<header class="mdl-layout__header">
+  <div class="mdl-layout__header-row">
+    <!-- Title -->
+    <a class="mdl-navigation__link" href="/en<%=url.main.route%>">
+      <span class="mdl-layout-title titlename"><img class="title-t" src="/pics/favicon.png" alt="T">obias Hölzer</span>
+    </a>
+    <!-- Add spacer, to align navigation to the right -->
+    <div class="mdl-layout-spacer"></div>
+    <!-- Navigation. We hide it in small screens. -->
+    <nav class="mdl-navigation mdl-layout--large-screen-only">
+      <a class="mdl-navigation__link" href="/en<%=url.main.route%>"><i class="material-icons">home</i></a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.aboutme%>">about me</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.work%>">work</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.blog%>">blog</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.references%>">contact</a>
+    </nav>
+  </div>
+</header>
+<div class="mdl-layout__drawer">
+  <span class="mdl-layout-title titlename">Tobias Hölzer</span>
+  <nav class="mdl-navigation">
+    <a class="mdl-navigation__link" href="/en<%=url.main.route%>"><i class="material-icons">home</i></a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.aboutme%>">about me</a>
+      <a class="mdl-navigation__link" href="/en<%=url.main.work%>">work</a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.blog%>">blog</a>
+    <a class="mdl-navigation__link" href="/en<%=url.main.references%>">contact</a>
+    <hr>
+    <a class="mdl-navigation__link" href="<%=url.main.lang+'?path=/'+originalUrl.split('/').slice(2).join('/')%>">
+      <img class="lang-nav-img" src="/pics/germany.png" alt="Deutsch">
+      <img class="lang-nav-img" src="/pics/united-kingdom.png" alt="English">
+    </a>
+  </nav>
+</div>

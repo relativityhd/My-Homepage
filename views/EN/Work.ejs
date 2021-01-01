@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head', {webtitle: 'My Work - Tobias Hölzer', webcontent: 'My IT-projects, some selfmade pictures of games and documents of my accomplishments.'}) %>
+  <style>#file-wrapper{
+      margin-top: 5%;
+      margin-bottom: 5%;
+      text-align: center;
+    }
+    @media screen and (max-width: 600px) {
+      .demo-card-wide.mdl-card{
+        width: 332px;
+      }
+    }
+    .file-card{
+      display: inline-block;
+      margin-left: 0.5%;
+      margin-right: 0.5%;
+      margin-top: 1%;
+      margin-bottom: 1%;
+      text-align: left;
+    }
+    .file-card-effects{
+      position: relative;
+      top: 0;
+      transition: top 0.2s ease-out;
+    }
+    .file-card-effects:hover{
+      top: -10px;
+    }
+    .title{
+      text-align: center;
+      font-size: 72px;
+    }
+    .small-title{
+      text-align: left;
+      font-size: 48px;
+      margin-left: 5%;
+    }
+    .pdf-link{
+      font-size: 18px;
+      line-height: 24px;
+      margin-left: 5%;
+      display: block;
+    }
+  </style>
+  <body>
+    <%- include ../loader %>
+    <script>
+      window.onbeforeunload = undefined
+    </script>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <%- include header %>
+      <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here -->
+          <h1 class="title">my works</h1>
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--8-col">
+              <h3 class="small-title">Files</h3>
+              <div id="file-wrapper">
+                <% files.forEach(function (file) { %>
+                <div class="file-card">
+                  <div class="file-card-effects">
+                    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                      <div class="mdl-card__title mdl-card--expand" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)), url(/pics/zips/<%= file.pic %>) center / cover;">
+                        <h2 class="mdl-card__title-text"><%= file.name %></h2>
+                      </div>
+                      <div class="mdl-card__supporting-text">
+                        <%= file.short %>
+                      </div>
+                      <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"<% if (file.pic=="../../pics/error.png" || file.long=="nofile") {%>disabled="true"<% }else{%> href="/en<%=url.main.works%>/<%= file.long %>"<%}%>>
+                          Read more
+                        </a>
+                      </div>
+                      <div class="mdl-card__menu">
+                        <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"<% if (file.pic=="../../pics/error.png") {%>disabled="true"<% }else{%> href="/downloads/zips/<%= file.name %>.zip"<%}%>>
+                          <i class="material-icons">cloud_download</i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+            <div class="mdl-cell mdl-cell--4-col">
+              <h3 class="small-title">PDFs</h3>
+              <% pdfs.forEach(function (pdf) { %>
+              <a class="pdf-link" href="/downloads/pdf/<%= pdf %>" target="_blank"><%= pdf %></a>
+              <% }) %>
+            </div>
+          </div>
+          <h3 class="small-title">Selfmade Gaming Pictures</h3>
+          <div id="file-wrapper">
+            <% pics.forEach(function (pic) { %>
+            <div class="file-card">
+              <div class="file-card-effects">
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                  <div class="mdl-card__title" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)), url(/downloads/pictures/<%= pic.pic %>) center / cover;">
+                    <h2 class="mdl-card__title-text"><%= pic.name %></h2>
+                  </div>
+                  <div class="mdl-card__supporting-text">
+                    <%= pic.short %>
+                  </div>
+                  <div class="mdl-card__menu">
+                    <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"<% if (pic.pic=="../../pics/error.png") {%>disabled="true"<% }else{%> href="/downloads/big-pictures/<%= pic.pic %>"<%}%> target="_blank">
+                      <i class="material-icons">fullscreen</i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </main>
+      <%- include footer %>
+    </div>
+    </body>
+</html>
