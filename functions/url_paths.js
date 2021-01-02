@@ -1,10 +1,10 @@
 let db_url = ''
 let url = ''
 if (process.env.NODE_ENV == 'production') {
-  db_url = 'mongodb+srv://Tobias:Tobias2001@tobicluster-ugv9w.mongodb.net/MyHomepage?retryWrites=true&w=majority'
+  db_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_URL}/MyHomepage?retryWrites=true&w=majority`
   url = 'https://tobiashoelzer.dynu.net'
 }else{
-  db_url = 'mongodb+srv://Tobias:Tobias2001@tobicluster-ugv9w.mongodb.net/test?retryWrites=true&w=majority'
+  db_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_URL}/test?retryWrites=true&w=majority`
   url = 'localhost:3000'
 }
 
