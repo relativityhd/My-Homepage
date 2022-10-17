@@ -26,7 +26,7 @@ module.exports = {
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
-      'post-deploy': 'npm install && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
+      'post-deploy': 'echo $PWD && npm install && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
       env: {
         NODE_ENV: 'production',
         PORT: 3800,
