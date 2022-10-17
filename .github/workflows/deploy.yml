@@ -1,29 +1,39 @@
+# Based on https://zellwk.com/blog/github-actions-deploy/
 name: Deploy
 on:
   push:
     branches: [ main ]
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 10.X
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '10.x'
-      - run: npm ci
-      - name: Install IBM Cloud CLI
-        run: curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-        shell: bash
-      - name: Install Cloud Foundry CLI
-        run: ibmcloud cf install
-        shell: bash
-      - name: Authenticate with IBM Cloud CLI
-        run: ibmcloud login --apikey "${{ secrets.IBM_CLOUD_API_KEY }}" --no-region -g Default
-        shell: bash
-      - name: Target a Cloud Foundry org and space
-        run: ibmcloud target --cf-api "${{ secrets.IBM_CLOUD_CF_API }}" -o "${{ secrets.IBM_CLOUD_CF_ORG }}" -s "${{ secrets.IBM_CLOUD_CF_SPACE }}"
-        shell: bash
-      - name: Deploy to Cloud Foundry
-        run: ibmcloud cf push
-        shell: bash
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install PM2
+        run: npm i pm2
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
+
+      - name: Write SSH-Keyfile
+        run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions_rsa
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo MONGO_USER=${{ secrets.MONGO_USER }} >> .env
+          echo MONGO_PASS=${{ secrets.MONGO_PASS }} >> .env
+          echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
+
+      - name: Deploy
+        run: npm run deploy

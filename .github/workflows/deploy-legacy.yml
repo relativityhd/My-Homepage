@@ -1,0 +1,29 @@
+name: Deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 10.X
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm ci
+      - name: Install IBM Cloud CLI
+        run: curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+        shell: bash
+      - name: Install Cloud Foundry CLI
+        run: ibmcloud cf install
+        shell: bash
+      - name: Authenticate with IBM Cloud CLI
+        run: ibmcloud login --apikey "${{ secrets.IBM_CLOUD_API_KEY }}" --no-region -g Default
+        shell: bash
+      - name: Target a Cloud Foundry org and space
+        run: ibmcloud target --cf-api "${{ secrets.IBM_CLOUD_CF_API }}" -o "${{ secrets.IBM_CLOUD_CF_ORG }}" -s "${{ secrets.IBM_CLOUD_CF_SPACE }}"
+        shell: bash
+      - name: Deploy to Cloud Foundry
+        run: ibmcloud cf push
+        shell: bash
