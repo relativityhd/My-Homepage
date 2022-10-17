@@ -12,7 +12,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "deploy": "env $(cat .env | grep -v \"#\" | xargs) pm2 -f deploy ecosystem.config.js production"
+    "deploy": "env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.js production"
   },
   "dependencies": {
     "async": "^2.6.1",
