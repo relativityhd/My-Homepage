@@ -32,8 +32,5 @@ jobs:
           echo MONGO_PASS=${{ secrets.MONGO_PASS }} >> .env
           echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
 
-      - name: Get Path
-        run: echo $PATH && echo $(whoami)
-
       - name: Deploy
         run: npm run deploy

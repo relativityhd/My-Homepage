@@ -26,7 +26,7 @@ module.exports = {
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
-      'post-deploy': 'npm install && pm2 save',
+      'post-deploy': 'echo $PATH && echo $(whoami) && npm install && pm2 save',
       env: {
         NODE_ENV: 'production',
         PORT: 3800,
