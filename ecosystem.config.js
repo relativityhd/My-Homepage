@@ -22,6 +22,7 @@ module.exports = {
       user: 'runner',
       host: 'tobiashoelzer.de',
       key: '~/.ssh/id_rsa',
+      ssh_options: 'StrictHostKeyChecking=no',
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
