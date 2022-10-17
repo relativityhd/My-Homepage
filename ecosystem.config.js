@@ -21,7 +21,7 @@ module.exports = {
     production: {
       user: 'runner',
       host: 'tobiashoelzer.de',
-      key: '~/.ssh/github_actions_rsa',
+      key: '~/.ssh/id_rsa',
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
