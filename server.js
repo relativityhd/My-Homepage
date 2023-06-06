@@ -11,7 +11,6 @@ const bodyParser = require('body-parser')
 const expressValidator = require('express-validator');
 const session = require('express-session')
 const passport = require('passport')
-const clear = require('clear')
 const async = require('async')
 
 // Import/require all necessary files
@@ -26,9 +25,6 @@ var connectionTries = 0
 
 function init (err) {
   
-  // Clears console at app start
-  clear()
-  console.log()
   console.log(colors.routine(' $$ Start WebApp... $$\n'))
   connectionTries++
   
