@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '/etc/my-homepage/gkz4j' })
+
 module.exports = {
   apps: [
     {
@@ -14,8 +16,8 @@ module.exports = {
         MONGO_PASS: process.env.MONGO_PASS,
         MONGO_USER: process.env.MONGO_USER,
         MONGO_URL: process.env.MONGO_URL
-      },
-    },
+      }
+    }
   ],
   deploy: {
     production: {
@@ -33,7 +35,7 @@ module.exports = {
         MONGO_PASS: process.env.MONGO_PASS,
         MONGO_USER: process.env.MONGO_USER,
         MONGO_URL: process.env.MONGO_URL
-      },
-    },
-  },
+      }
+    }
+  }
 }
