@@ -1,5 +1,3 @@
-require('dotenv').config({ path: '/etc/my-homepage/gkz4j' })
-
 module.exports = {
   apps: [
     {
@@ -12,10 +10,20 @@ module.exports = {
       watch: false,
       max_memory_restart: '500M',
       env: {
+        NODE_ENV: 'development'
         PORT: 3000,
         MONGO_PASS: process.env.MONGO_PASS,
         MONGO_USER: process.env.MONGO_USER,
         MONGO_URL: process.env.MONGO_URL
+      },
+      env_test: {
+        NODE_ENV: 'test'
+      },
+      env_staging: {
+        NODE_ENV: 'staging'
+      },
+      env_production: {
+        NODE_ENV: 'production'
       }
     }
   ],
@@ -28,14 +36,14 @@ module.exports = {
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
-      'post-deploy': 'npm ci && pm2 startOrRestart ecosystem.config.js --env production',
-      env: {
+      'post-deploy': 'npm ci && pm2 startOrRestart ecosystem.config.js --env production'
+      /*env: {
         NODE_ENV: 'production',
         PORT: 3800,
         MONGO_PASS: process.env.MONGO_PASS,
         MONGO_USER: process.env.MONGO_USER,
         MONGO_URL: process.env.MONGO_URL
-      }
+      }*/
     }
   }
 }
