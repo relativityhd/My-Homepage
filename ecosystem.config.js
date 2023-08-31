@@ -6,7 +6,7 @@ module.exports = {
       time: true,
       instances: 1,
       autorestart: true,
-      max_restarts: 50,
+      max_restarts: 3,
       watch: false,
       max_memory_restart: '500M',
       env: {
