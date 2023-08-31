@@ -10,7 +10,7 @@ module.exports = {
       watch: false,
       max_memory_restart: '500M',
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'development',
         PORT: 3000,
         MONGO_PASS: process.env.MONGO_PASS,
         MONGO_USER: process.env.MONGO_USER,
