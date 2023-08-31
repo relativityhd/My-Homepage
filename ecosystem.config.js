@@ -36,14 +36,7 @@ module.exports = {
       ref: 'origin/main',
       repo: 'https://github.com/relativityhd/my-homepage',
       path: '/var/www/my-homepage',
-      'post-deploy': 'npm ci && pm2 startOrRestart ecosystem.config.js --env production'
-      /*env: {
-        NODE_ENV: 'production',
-        PORT: 3800,
-        MONGO_PASS: process.env.MONGO_PASS,
-        MONGO_USER: process.env.MONGO_USER,
-        MONGO_URL: process.env.MONGO_URL
-      }*/
+      'post-deploy': 'npm ci && pm2 startOrRestart ecosystem.config.js --env production --update-env'
     }
   }
 }
