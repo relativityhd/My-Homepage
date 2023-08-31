@@ -1,5 +1,5 @@
 // Import/require all necessary node-modules
-require('dotenv').config()
+require('dotenv').config({ path: "/etc/my-homepage/gkz4j"})
 const express = require('express')
 const app = express()
 const https = require('https')
